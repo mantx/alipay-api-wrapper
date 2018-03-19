@@ -11,6 +11,7 @@ Thumbs.db
 
 # Project Specific #
 ####################
+.idea
 nbproject
 examples/credentials.php
 composer.lock
