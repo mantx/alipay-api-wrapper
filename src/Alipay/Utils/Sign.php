@@ -27,7 +27,7 @@ class Sign
     /**
      * @return mixed
      */
-    public static function getPaymaxPublicKey()
+    public static function getAlipayPublicKey()
     {
         return self::$alipayPublicKey;
     }
@@ -35,7 +35,7 @@ class Sign
     /**
      * @param mixed $alipayPublicKey
      */
-    public static function setPaymaxPublicKey($alipayPublicKey)
+    public static function setAlipayPublicKey($alipayPublicKey)
     {
         self::$alipayPublicKey = $alipayPublicKey;
     }
@@ -46,19 +46,18 @@ class Sign
      *
      * @return string
      */
-    public static function rsaSign($data)
+    public static function rsaSign($data, $signType = 'RSA')
     {
-        $private_key =
-            '-----BEGIN RSA PRIVATE KEY-----' .
-            PHP_EOL . self::$privateKey . PHP_EOL .
-            '-----END RSA PRIVATE KEY-----';
-        $res         = openssl_get_privatekey($private_key);
-        if ($res) {
-            openssl_sign($data, $sign, $res);
+        $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
+               wordwrap(self::$privateKey, 64, "\n", true) .
+               "\n-----END RSA PRIVATE KEY-----";
+
+        if ("RSA2" == $signType) {
+            openssl_sign($data, $sign, $res, OPENSSL_ALGO_SHA256);
         } else {
-            throw new \Exception('The format of your private_key is incorrect!');
+            openssl_sign($data, $sign, $res);
         }
-        openssl_free_key($res);
+
         //base64编码
         $sign = base64_encode($sign);
 
@@ -72,19 +71,17 @@ class Sign
      *
      * @return bool
      */
-    public static function rsaVerify($data, $sign)
+    public static function rsaVerify($data, $sign, $signType = 'RSA')
     {
-        $alipay_public_key =
-            '-----BEGIN PUBLIC KEY-----' .
-            PHP_EOL . self::$alipayPublicKey . PHP_EOL .
-            '-----END PUBLIC KEY-----';
-        $res               = openssl_get_publickey($alipay_public_key);
-        if ($res) {
-            $result = (bool)openssl_verify($data, base64_decode($sign), $res);
+        $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
+               wordwrap(self::$alipayPublicKey, 64, "\n", true) .
+               "\n-----END RSA PRIVATE KEY-----";
+
+        if ("RSA2" == $signType) {
+            $result = (bool)openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256);
         } else {
-            throw new \Exception('The format of your alipay_public_key is incorrect!');
+            $result = (bool)openssl_verify($data, base64_decode($sign), $res);
         }
-        openssl_free_key($res);
 
         return $result;
     }
