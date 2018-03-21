@@ -133,10 +133,14 @@ class AlipayMerchantQrcodeCreateRequest extends AbstractRequest
         ]
     ];
 
+    protected $service = 'alipay.commerce.qrcode.create';
+
     public function getRequestParams()
     {
         $baseParams = parent::getRequestParams();
 
         return array_merge($baseParams, self::$params, self::$bizDataParams);
     }
+
+
 }

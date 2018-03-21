@@ -6,6 +6,8 @@ abstract class AbstractRequest
 {
     protected $values = [];
 
+    protected $service;
+
     private static $params = [
         'sign'           => [
             'type'         => 'string',
@@ -125,6 +127,14 @@ abstract class AbstractRequest
     public function getRequestParams()
     {
         return self::$params;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getServiceMethod()
+    {
+        return $this->service;
     }
 
 
