@@ -137,6 +137,6 @@ class AlipayMerchantQrcodeCreateRequest extends AbstractRequest
     {
         $baseParams = parent::getRequestParams();
 
-        return array_merge($baseParams, self::$params);
+        return array_merge($baseParams, self::$params, self::$bizDataParams);
     }
 }
