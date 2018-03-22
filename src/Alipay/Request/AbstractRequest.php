@@ -19,21 +19,18 @@ abstract class AbstractRequest
             'type'         => 'string',
             'required'     => true,
             'comment'      => '',
-            //            'maxLength'    => '10',
             'defaultValue' => ''
         ],
         'sign_type'      => [
             'type'         => 'string',
             'required'     => true,
             'comment'      => '',
-            //            'maxLength' => '10',
             'defaultValue' => 'RSA'
         ],
         'service'        => [
             'type'         => 'string',
             'required'     => true,
             'comment'      => '',
-            //            'maxLength' => '10',
             'defaultValue' => ''
         ],
         'partner'        => [
@@ -41,15 +38,13 @@ abstract class AbstractRequest
             'required'     => true,
             'comment'      => '',
             'length'       => '16',
-            //            'maxLength' => '10',
             'defaultValue' => 'RSA'
         ],
         '_input_charset' => [
             'type'         => 'string',
             'required'     => false,
             'comment'      => '',
-            //            'maxLength' => '10',
-            'defaultValue' => 'GBK'
+            'defaultValue' => 'UTF-8'
         ],
     ];
 
@@ -114,7 +109,6 @@ abstract class AbstractRequest
         $this->validateParameterValue($key, $value);
         $this->values[$key] = $value;
     }
-
 
     protected function initializeValues()
     {
@@ -354,7 +348,8 @@ abstract class AbstractRequest
         $signData   = [];
         $signParams = $this->getRequestParams();
         foreach ($signParams as $key => $value) {
-            if (!in_array($key, ['sign', 'sign_type']) &&
+            if (!in_array($key, ['sign']) &&
+                //            if (!in_array($key, ['sign', 'sign_type']) &&
                 (false === $this->checkEmpty($value)) &&
                 ("@" != substr($value, 0, 1))
             ) {

@@ -4,8 +4,6 @@
 namespace Alipay\Request;
 
 
-use Alipay\Utils\Utility;
-
 class AlipayMerchantQrcodeCreateRequest extends GlobalAbstractRequest
 {
     private static $params = [
@@ -155,9 +153,11 @@ class AlipayMerchantQrcodeCreateRequest extends GlobalAbstractRequest
 
         $bizValues = [];
         foreach(self::$bizDataParams as $key => $info) {
-            $bizValues[$key] = $this->{$key};
+            if($this->{$key}) {
+                $bizValues[$key] = $this->{$key};
+            }
         }
-        $values['biz_data'] = json_encode($bizValues, true);
+        $this->biz_data = $values['biz_data'] = json_encode($bizValues, true);
         return $values;
     }
 
