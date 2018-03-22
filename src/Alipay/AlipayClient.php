@@ -2,6 +2,7 @@
 
 namespace Alipay;
 
+use Alipay\Request\AbstractRequest;
 use Alipay\Utils\Encrypt;
 use Alipay\Utils\EncryptParseItem;
 use Alipay\Utils\Sign;
@@ -110,7 +111,6 @@ class AlipayClient
      */
     function characet($data, $targetCharset)
     {
-
         if (!empty($data)) {
             $fileType = $this->fileCharset;
             if (strcasecmp($fileType, $targetCharset) != 0) {
@@ -124,7 +124,15 @@ class AlipayClient
     }
 
 
-    public function execute($request, $authToken = null, $appInfoAuthtoken = null)
+    /**
+     * @param AbstractRequest $request
+     * @param null            $authToken
+     * @param null            $appInfoAuthtoken
+     *
+     * @return bool|mixed|\SimpleXMLElement
+     * @throws \Exception
+     */
+    public function execute(AbstractRequest $request, $authToken = null, $appInfoAuthtoken = null)
     {
 
         $this->setupCharsets($request);
@@ -144,7 +152,7 @@ class AlipayClient
         $sysParams["version"]        = $iv;
         $sysParams["format"]         = $this->format;
         $sysParams["sign_type"]      = $this->signType;
-        $sysParams["method"]         = $request->getApiMethodName();
+        $sysParams["method"]         = $request->getServiceMethod();
         $sysParams["timestamp"]      = date("Y-m-d H:i:s");
         $sysParams["auth_token"]     = $authToken;
         $sysParams["alipay_sdk"]     = $this->alipaySdkVersion;
@@ -160,34 +168,27 @@ class AlipayClient
         $apiParams = $request->getApiParas();
 
         if (method_exists($request, "getNeedEncrypt") && $request->getNeedEncrypt()) {
-
             $sysParams["encrypt_type"] = $this->encryptType;
-
             if ($this->checkEmpty($apiParams['biz_content'])) {
-
                 throw new \Exception(" api request Fail! The reason : encrypt request is not supperted!");
             }
 
             if ($this->checkEmpty($this->encryptKey) || $this->checkEmpty($this->encryptType)) {
-
                 throw new \Exception(" encryptType and encryptKey must not null! ");
             }
 
             if ("AES" != $this->encryptType) {
-
                 throw new \Exception("加密类型只支持AES");
             }
 
             // 执行加密
-            $enCryptContent           = \Alipay\Utils\Encrypt::encrypt($apiParams['biz_content'], $this->encryptKey);
+            $enCryptContent           = Encrypt::encrypt($apiParams['biz_content'], $this->encryptKey);
             $apiParams['biz_content'] = $enCryptContent;
 
         }
 
-
         //签名
         $sysParams["sign"] = $this->generateSign(array_merge($apiParams, $sysParams), $this->signType);
-
 
         //系统参数放入GET请求串
         $requestUrl = $this->gatewayUrl . "?";
@@ -195,7 +196,6 @@ class AlipayClient
             $requestUrl .= "$sysParamKey=" . urlencode($this->characet($sysParamValue, $this->postCharset)) . "&";
         }
         $requestUrl = substr($requestUrl, 0, -1);
-
 
         //发起HTTP请求
         try {
@@ -211,10 +211,8 @@ class AlipayClient
         //解析AOP返回结果
         $respWellFormed = false;
 
-
         // 将返回结果转换本地文件编码
         $r = iconv($this->postCharset, $this->fileCharset . "//IGNORE", $resp);
-
 
         $signData = null;
 
@@ -274,26 +272,27 @@ class AlipayClient
 
     // 获取加密内容
 
-    private function encryptXMLSignSource($request, $responseContent) {
+    private function encryptXMLSignSource($request, $responseContent)
+    {
 
         $parsetItem = $this->parserEncryptXMLSignSource($request, $responseContent);
 
         $bodyIndexContent = substr($responseContent, 0, $parsetItem->startIndex);
-        $bodyEndContent = substr($responseContent, $parsetItem->endIndex, strlen($responseContent) + 1 - $parsetItem->endIndex);
-        $bizContent = Encrypt::decrypt($parsetItem->encryptContent, $this->encryptKey);
+        $bodyEndContent   =
+            substr($responseContent, $parsetItem->endIndex, strlen($responseContent) + 1 - $parsetItem->endIndex);
+        $bizContent       = Encrypt::decrypt($parsetItem->encryptContent, $this->encryptKey);
 
         return $bodyIndexContent . $bizContent . $bodyEndContent;
 
     }
 
-    private function parserEncryptXMLSignSource($request, $responseContent) {
-
-
-        $apiName = $request->getApiMethodName();
+    private function parserEncryptXMLSignSource($request, $responseContent)
+    {
+        $apiName      = $request->getApiMethodName();
         $rootNodeName = str_replace(".", "_", $apiName) . $this->RESPONSE_SUFFIX;
 
 
-        $rootIndex = strpos($responseContent, $rootNodeName);
+        $rootIndex  = strpos($responseContent, $rootNodeName);
         $errorIndex = strpos($responseContent, $this->ERROR_RESPONSE);
         //		$this->echoDebug("<br/>rootNodeName:" . $rootNodeName);
         //		$this->echoDebug("<br/> responseContent:<xmp>" . $responseContent . "</xmp>");
@@ -302,46 +301,49 @@ class AlipayClient
         if ($rootIndex > 0) {
 
             return $this->parserEncryptXMLItem($responseContent, $rootNodeName, $rootIndex);
-        } else if ($errorIndex > 0) {
-
-            return $this->parserEncryptXMLItem($responseContent, $this->ERROR_RESPONSE, $errorIndex);
         } else {
+            if ($errorIndex > 0) {
 
-            return null;
+                return $this->parserEncryptXMLItem($responseContent, $this->ERROR_RESPONSE, $errorIndex);
+            } else {
+
+                return null;
+            }
         }
-   }
+    }
 
 
-    private function parserEncryptXMLItem($responseContent, $nodeName, $nodeIndex) {
+    private function parserEncryptXMLItem($responseContent, $nodeName, $nodeIndex)
+    {
 
         $signDataStartIndex = $nodeIndex + strlen($nodeName) + 1;
 
-        $xmlStartNode="<".$this->ENCRYPT_XML_NODE_NAME.">";
-        $xmlEndNode="</".$this->ENCRYPT_XML_NODE_NAME.">";
+        $xmlStartNode = "<" . $this->ENCRYPT_XML_NODE_NAME . ">";
+        $xmlEndNode   = "</" . $this->ENCRYPT_XML_NODE_NAME . ">";
 
-        $indexOfXmlNode=strpos($responseContent,$xmlEndNode);
-        if($indexOfXmlNode<0){
+        $indexOfXmlNode = strpos($responseContent, $xmlEndNode);
+        if ($indexOfXmlNode < 0) {
 
-            $item = new EncryptParseItem();
+            $item                 = new EncryptParseItem();
             $item->encryptContent = null;
-            $item->startIndex = 0;
-            $item->endIndex = 0;
+            $item->startIndex     = 0;
+            $item->endIndex       = 0;
+
             return $item;
         }
 
-        $startIndex=$signDataStartIndex+strlen($xmlStartNode);
-        $bizContentLen=$indexOfXmlNode-$startIndex;
-        $bizContent=substr($responseContent,$startIndex,$bizContentLen);
+        $startIndex    = $signDataStartIndex + strlen($xmlStartNode);
+        $bizContentLen = $indexOfXmlNode - $startIndex;
+        $bizContent    = substr($responseContent, $startIndex, $bizContentLen);
 
-        $encryptParseItem = new EncryptParseItem();
+        $encryptParseItem                 = new EncryptParseItem();
         $encryptParseItem->encryptContent = $bizContent;
-        $encryptParseItem->startIndex = $signDataStartIndex;
-        $encryptParseItem->endIndex = $indexOfXmlNode+strlen($xmlEndNode);
+        $encryptParseItem->startIndex     = $signDataStartIndex;
+        $encryptParseItem->endIndex       = $indexOfXmlNode + strlen($xmlEndNode);
 
         return $encryptParseItem;
 
     }
-
 
 
     function parserJSONSignData($request, $responseContent, $responseJSON)
