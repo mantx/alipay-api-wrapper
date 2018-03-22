@@ -4,7 +4,9 @@
 namespace Alipay\Request;
 
 
-class AlipayMerchantQrcodeCreateRequest extends AbstractRequest
+use Alipay\Utils\Utility;
+
+class AlipayMerchantQrcodeCreateRequest extends GlobalAbstractRequest
 {
     private static $params = [
         //basic parameters
@@ -12,7 +14,7 @@ class AlipayMerchantQrcodeCreateRequest extends AbstractRequest
             'type'         => 'string',
             'required'     => true,
             'comment'      => '',
-            'defaultValue' => ''
+            'defaultValue' => self::DEFAULT_VALUE_CURRENT_TIME
         ],
         'notify_url' => [
             'type'     => 'string',
@@ -24,6 +26,7 @@ class AlipayMerchantQrcodeCreateRequest extends AbstractRequest
             'type'     => 'string',
             'required' => true,
             'comment'  => '',
+            'defaultValue' => 'OVERSEASHOPQRCODE'
         ],
         'biz_data'   => [
             'type'     => 'string',
@@ -135,11 +138,27 @@ class AlipayMerchantQrcodeCreateRequest extends AbstractRequest
 
     protected $service = 'alipay.commerce.qrcode.create';
 
-    public function getRequestParams()
+    public function getParams()
     {
-        $baseParams = parent::getRequestParams();
+        $baseParams = parent::getParams();
 
         return array_merge($baseParams, self::$params, self::$bizDataParams);
+    }
+
+    protected function getRequestParams()
+    {
+        $values = [];
+        $baseParams = parent::getParams();
+        foreach($baseParams as $key => $info) {
+            $values[$key] = $this->{$key};
+        }
+
+        $bizValues = [];
+        foreach(self::$bizDataParams as $key => $info) {
+            $bizValues[$key] = $this->{$key};
+        }
+        $values['biz_data'] = json_encode($bizValues, true);
+        return $values;
     }
 
 

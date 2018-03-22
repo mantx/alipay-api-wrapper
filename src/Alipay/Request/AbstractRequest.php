@@ -2,8 +2,14 @@
 
 namespace Alipay\Request;
 
+use Alipay\Utils\Sign;
+use Alipay\Utils\Utility;
+
 abstract class AbstractRequest
 {
+    const DEFAULT_VALUE_CURRENT_TIME = 'CALL FUNCTION:DEFAULT_VALUE_CURRENT_TIME';
+    const DEFAULT_VALUE_RAMDEOM_NUMBER = 'CALL FUNCTION:DEFAULT_VALUE_RAMDEOM_NUMBER';
+
     protected $values = [];
 
     protected $service;
@@ -28,7 +34,7 @@ abstract class AbstractRequest
             'required'     => true,
             'comment'      => '',
             //            'maxLength' => '10',
-            'defaultValue' => 'RSA'
+            'defaultValue' => ''
         ],
         'partner'        => [
             'type'         => 'string',
@@ -112,19 +118,25 @@ abstract class AbstractRequest
 
     protected function initializeValues()
     {
-        $params = $this->getRequestParams();
+        $params = $this->getParams();
         foreach ($params as $name => $infos) {
             if (isset($infos['multivalues']) && $infos['multivalues']) {
                 $this->values[$name] = array();
             } elseif (isset($infos['defaultValue']) && $infos['defaultValue']) {
-                $this->values[$name] = $infos['defaultValue'];
+                if ($infos['defaultValue'] === self::DEFAULT_VALUE_CURRENT_TIME) {
+                    $this->values[$name] = Utility::currentTime();
+                } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_RAMDEOM_NUMBER) {
+                    $this->values[$name] = Utility::randomNumber();
+                } else {
+                    $this->values[$name] = $infos['defaultValue'];
+                }
             } else {
                 $this->values[$name] = null;
             }
         }
     }
 
-    public function getRequestParams()
+    public function getParams()
     {
         return self::$params;
     }
@@ -146,7 +158,7 @@ abstract class AbstractRequest
      */
     protected function validateParams()
     {
-        $params = $this->getRequestParams();
+        $params = $this->getParams();
         foreach ($params as $name => $infos) {
             if ($this->values[$name]) {
                 $this->validateParameterType($name, $this->values[$name]);
@@ -170,7 +182,7 @@ abstract class AbstractRequest
      */
     protected function validateParameterType($key, $value)
     {
-        $params = $this->getRequestParams();
+        $params = $this->getParams();
         if (null === $value) {
             return true;
         }
@@ -233,7 +245,7 @@ abstract class AbstractRequest
      */
     protected function validateParameterValue($key, $value)
     {
-        $params = $this->getRequestParams();
+        $params = $this->getParams();
 
         foreach ($params[$key] as $type => $typeValue) {
             switch ($type) {
@@ -290,5 +302,67 @@ abstract class AbstractRequest
         }
 
         return true;
+    }
+
+    public function getRequestParamsAsUrl()
+    {
+        $finalParams      = [];
+        $allRequestParams = $this->getRequestParamsWithSign();
+
+        //validate all values
+        $this->validateParams();
+
+        foreach ($allRequestParams as $key => $value) {
+            if ($key && $value) {
+                $finalParams[$key] = $key . '=' . rawurldecode($value);
+            }
+        }
+        ksort($finalParams);
+
+        return implode('&', $finalParams);
+    }
+
+    protected function checkEmpty($value)
+    {
+        if (!isset($value)) {
+            return true;
+        }
+        if ($value === null) {
+            return true;
+        }
+        if (trim($value) === "") {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function getRequestParams()
+    {
+        return $this->values;
+    }
+
+    public function getRequestParamsWithSign()
+    {
+        $this->sign = Sign::rsaSign($this->getSignContent(), $this->sign_type);
+
+        return $this->getRequestParams();
+    }
+
+    protected function getSignContent()
+    {
+        $signData   = [];
+        $signParams = $this->getRequestParams();
+        foreach ($signParams as $key => $value) {
+            if (!in_array($key, ['sign', 'sign_type']) &&
+                (false === $this->checkEmpty($value)) &&
+                ("@" != substr($value, 0, 1))
+            ) {
+                $signData[$key] = $key . '=' . rawurldecode($value);
+            }
+        }
+        ksort($signData);
+
+        return implode('&', $signData);
     }
 }

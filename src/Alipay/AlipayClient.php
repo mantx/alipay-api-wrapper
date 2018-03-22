@@ -83,7 +83,6 @@ class AlipayClient
         $i                = 0;
         foreach ($params as $k => $v) {
             if (false === $this->checkEmpty($v) && "@" != substr($v, 0, 1)) {
-
                 // 转换成目标字符集
                 $v = $this->characet($v, $this->postCharset);
 
@@ -119,7 +118,6 @@ class AlipayClient
             }
         }
 
-
         return $data;
     }
 
@@ -134,12 +132,10 @@ class AlipayClient
      */
     public function execute(AbstractRequest $request, $authToken = null, $appInfoAuthtoken = null)
     {
-
         $this->setupCharsets($request);
 
         //		//  如果两者编码不一致，会出现签名验签或者乱码
         if (strcasecmp($this->fileCharset, $this->postCharset)) {
-
             // writeLog("本地文件字符集编码与表单提交编码不一致，请务必设置成一样，属性名分别为postCharset!");
             throw new \Exception("文件编码：[" . $this->fileCharset . "] 与表单提交编码：[" . $this->postCharset . "]两者不一致!");
         }
@@ -163,7 +159,6 @@ class AlipayClient
         $sysParams["charset"]        = $this->postCharset;
         $sysParams["app_auth_token"] = $appInfoAuthtoken;
 
-
         //获取业务参数
         $apiParams = $request->getApiParas();
 
@@ -184,7 +179,6 @@ class AlipayClient
             // 执行加密
             $enCryptContent           = Encrypt::encrypt($apiParams['biz_content'], $this->encryptKey);
             $apiParams['biz_content'] = $enCryptContent;
-
         }
 
         //签名
