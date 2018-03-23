@@ -10,17 +10,49 @@ class GlobalAbstractRequest extends AbstractRequest
         'service' => [
             'type'         => 'string',
             'required'     => true,
-            'comment'      => '',
-            'defaultValue' => 'RSA'
+            'comment'      => 'The interface name',
+            'defaultValue' => '',//alipay.commerce.qrcode.create
         ],
         'partner' => [
             'type'         => 'string',
             'required'     => true,
-            'comment'      => '',
+            'comment'      => 'The Alipay account generated when signing with Alipay; its length is 16, and it begins with 2088',
             'length'       => '16',
-            'defaultValue' => 'RSA'
+            'defaultValue' => ''
         ],
     ];
+
+    /**
+     * @return mixed
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setService($value)
+    {
+        $this->service = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPartner()
+    {
+        return $this->partner;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setPartner($value)
+    {
+        $this->partner = $value;
+    }
 
     public function getParams()
     {
@@ -28,8 +60,6 @@ class GlobalAbstractRequest extends AbstractRequest
 
         return array_merge($baseParams, self::$params);
     }
-
-
 
 
 }

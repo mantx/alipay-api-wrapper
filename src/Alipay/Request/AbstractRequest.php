@@ -18,36 +18,27 @@ abstract class AbstractRequest
         'sign'           => [
             'type'         => 'string',
             'required'     => true,
-            'comment'      => '',
+            'comment'      => 'See the “Digital Signature”',
             'defaultValue' => ''
         ],
         'sign_type'      => [
             'type'         => 'string',
             'required'     => true,
-            'comment'      => '',
-            'defaultValue' => 'RSA'
-        ],
-        'service'        => [
-            'type'         => 'string',
-            'required'     => true,
-            'comment'      => '',
-            'defaultValue' => ''
-        ],
-        'partner'        => [
-            'type'         => 'string',
-            'required'     => true,
-            'comment'      => '',
-            'length'       => '16',
+            'enumeration'  => 'DSA, RSA, RSA2, MD5',
+            'comment'      => 'Four values, namely, DSA, RSA, RSA2 and MD5 can be chosen; and must be capitalized',
             'defaultValue' => 'RSA'
         ],
         '_input_charset' => [
             'type'         => 'string',
             'required'     => false,
-            'comment'      => '',
+            'comment'      => 'The encoding format in merchant website such as utf-8, gbk and gb2312',
             'defaultValue' => 'UTF-8'
         ],
     ];
 
+    /**
+     * AbstractRequest constructor.
+     */
     public function __construct()
     {
         $this->initializeValues();
@@ -58,6 +49,56 @@ abstract class AbstractRequest
             }
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSign()
+    {
+        return $this->sign;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSign($value)
+    {
+        $this->sign = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSignType()
+    {
+        return $this->sign_type;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSignType($value)
+    {
+        $this->sign_type = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getInputCharset()
+    {
+        return $this->_input_charset;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setInputCharset($value)
+    {
+        $this->_input_charset = $value;
+    }
+
 
     /**
      * Magic isset function
