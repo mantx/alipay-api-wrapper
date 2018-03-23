@@ -155,7 +155,386 @@ class AlipayMerchantQrcodeCreateRequest extends GlobalAbstractRequest
         ]
     ];
 
-    protected $service = 'alipay.commerce.qrcode.create';
+    protected $__serviceMethod = 'alipay.commerce.qrcode.create';
+
+    /**
+     * @return mixed
+     */
+    public function getTimeStamp()
+    {
+        return $this->timestamp;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTimeStamp($value)
+    {
+        $this->timestamp = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotifyUrl()
+    {
+        return $this->notify_url;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setNotifyUrl($value)
+    {
+        $this->notify_url = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getBizType()
+    {
+        return $this->biz_type;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setBizType($value)
+    {
+        $this->biz_type = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBizData()
+    {
+        return $this->biz_data;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setBizData($value)
+    {
+        $this->biz_data = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecondaryMerchantIndustry()
+    {
+        return $this->secondary_merchant_industry;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSecondaryMerchantIndustry($value)
+    {
+        $this->secondary_merchant_industry = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getSecondaryMerchantId()
+    {
+        return $this->secondary_merchant_id;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSecondaryMerchantId($value)
+    {
+        $this->secondary_merchant_id = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecondaryMerchantName()
+    {
+        return $this->secondary_merchant_name;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSecondaryMerchantName($value)
+    {
+        $this->secondary_merchant_name = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStoreId()
+    {
+        return $this->store_id;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setStoreId($value)
+    {
+        $this->store_id = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStoreName()
+    {
+        return $this->store_name;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setStoreName($value)
+    {
+        $this->store_name = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxiOperationId()
+    {
+        return $this->taxi_operation_id;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTaxiOperationId($value)
+    {
+        $this->taxi_operation_id = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxiNumber()
+    {
+        return $this->taxi_number;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTaxiNumber($value)
+    {
+        $this->taxi_number = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxiDriverName()
+    {
+        return $this->taxi_driver_name;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTaxiDriverName($value)
+    {
+        $this->taxi_driver_name = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxiDriverMobile()
+    {
+        return $this->taxi_driver_mobile;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTaxiDriverMobile($value)
+    {
+        $this->taxi_driver_mobile = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getTransCurrency()
+    {
+        return $this->trans_currency;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTransCurrency($value)
+    {
+        $this->trans_currency = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setCurrency($value)
+    {
+        $this->currency = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getSysServiceProviderId()
+    {
+        return $this->sys_service_provider_id;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSysServiceProviderId($value)
+    {
+        $this->sys_service_provider_id = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getChannelFee()
+    {
+        return $this->channel_fee;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setChannelFee($value)
+    {
+        $this->channel_fee = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCountryCode()
+    {
+        return $this->country_code;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setCountryCode($value)
+    {
+        $this->country_code = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setAddress($value)
+    {
+        $this->address = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getPassbackParameters()
+    {
+        return $this->passback_parameters;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setPassbackParameters($value)
+    {
+        $this->passback_parameters = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getNotifyMobile()
+    {
+        return $this->notify_mobile;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setNotifyMobile($value)
+    {
+        $this->notify_mobile = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getNotifyWangwang()
+    {
+        return $this->notify_wangwang;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setNotifyWangwang($value)
+    {
+        $this->notify_wangwang = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getNotifyAlipayAccount()
+    {
+        return $this->notify_alipay_account;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setNotifyAlipayAccount($value)
+    {
+        $this->notify_alipay_account = $value;
+    }
 
 
     public function getParams()

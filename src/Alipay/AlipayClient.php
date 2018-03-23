@@ -148,7 +148,7 @@ class AlipayClient
         $sysParams["version"]        = $iv;
         $sysParams["format"]         = $this->format;
         $sysParams["sign_type"]      = $this->signType;
-        $sysParams["method"]         = $request->getServiceMethod();
+        $sysParams["method"]         = '';//$request->getServiceMethod();
         $sysParams["timestamp"]      = date("Y-m-d H:i:s");
         $sysParams["auth_token"]     = $authToken;
         $sysParams["alipay_sdk"]     = $this->alipaySdkVersion;

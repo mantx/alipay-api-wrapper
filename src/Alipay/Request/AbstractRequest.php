@@ -12,8 +12,6 @@ abstract class AbstractRequest
 
     protected $values = [];
 
-    protected $service;
-
     private static $params = [
         'sign'           => [
             'type'         => 'string',
@@ -176,13 +174,13 @@ abstract class AbstractRequest
         return self::$params;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getServiceMethod()
-    {
-        return $this->service;
-    }
+//    /**
+//     * @return mixed
+//     */
+//    public function getServiceMethod()
+//    {
+//        return $this->service;
+//    }
 
 
     /**
@@ -285,7 +283,7 @@ abstract class AbstractRequest
         foreach ($params[$key] as $type => $typeValue) {
             switch ($type) {
                 case 'enumeration':
-                    $acceptedValues = explode(',', $typeValue);
+                    $acceptedValues = explode(',', str_replace(' ', '', $typeValue));
                     if (!in_array($value, $acceptedValues)) {
                         throw new \InvalidArgumentException('Field ' . $key . ' cannot be set to value : ' . $value .
                                                             '. Accepted values are : ' . $typeValue);

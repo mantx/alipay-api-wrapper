@@ -22,6 +22,8 @@ class GlobalAbstractRequest extends AbstractRequest
         ],
     ];
 
+    protected $__serviceMethod;
+
     /**
      * @return mixed
      */
@@ -59,6 +61,12 @@ class GlobalAbstractRequest extends AbstractRequest
         $baseParams = parent::getParams();
 
         return array_merge($baseParams, self::$params);
+    }
+
+    protected function initializeValues()
+    {
+        parent::initializeValues();
+        $this->setService($this->__serviceMethod);
     }
 
 
