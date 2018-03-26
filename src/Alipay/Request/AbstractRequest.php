@@ -34,6 +34,8 @@ abstract class AbstractRequest
         ],
     ];
 
+    protected $signSkippedParams = ['sign', 'sign_type'];
+
     /**
      * AbstractRequest constructor.
      */
@@ -354,12 +356,15 @@ abstract class AbstractRequest
 
         foreach ($allRequestParams as $key => $value) {
             if ($key && $value) {
-                $finalParams[$key] = $key . '=' . rawurldecode($value);
+                $finalParams[$key] = $key . '=' . urlencode($value);
             }
         }
         ksort($finalParams);
 
-        return implode('&', $finalParams);
+        $arg = implode('&', $finalParams);
+
+//        if(get_magic_quotes_gpc()){$arg = stripslashes($arg);}
+        return $arg;
     }
 
     protected function checkEmpty($value)
@@ -384,7 +389,7 @@ abstract class AbstractRequest
 
     public function getRequestParamsWithSign()
     {
-        $this->sign = Sign::rsaSign($this->getSignContent(), $this->sign_type);
+        $this->sign = Sign::sign($this->getSignContent(), $this->sign_type);
 
         return $this->getRequestParams();
     }
@@ -394,8 +399,7 @@ abstract class AbstractRequest
         $signData   = [];
         $signParams = $this->getRequestParams();
         foreach ($signParams as $key => $value) {
-//            if (!in_array($key, ['sign']) &&
-            if (!in_array($key, ['sign', 'sign_type']) &&
+            if (!in_array($key, $this->signSkippedParams) &&
                 (false === $this->checkEmpty($value)) &&
                 ("@" != substr($value, 0, 1))
             ) {
