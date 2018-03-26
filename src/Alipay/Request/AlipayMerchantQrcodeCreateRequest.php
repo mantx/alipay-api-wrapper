@@ -4,7 +4,7 @@
 namespace Alipay\Request;
 
 
-class AlipayMerchantQrcodeCreateRequest extends GlobalAbstractRequest
+class AlipayMerchantQrcodeCreateRequest extends AlipayMerchantQrcodeRequest
 {
     private static $params = [
         //basic parameters
@@ -535,7 +535,6 @@ class AlipayMerchantQrcodeCreateRequest extends GlobalAbstractRequest
     {
         $this->notify_alipay_account = $value;
     }
-
 
     public function getParams()
     {

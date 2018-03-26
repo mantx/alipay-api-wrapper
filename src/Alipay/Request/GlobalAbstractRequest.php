@@ -4,7 +4,7 @@
 namespace Alipay\Request;
 
 
-class GlobalAbstractRequest extends AbstractRequest
+abstract class GlobalAbstractRequest extends AbstractRequest
 {
     private static $params = [
         'service' => [

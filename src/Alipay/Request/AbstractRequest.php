@@ -250,6 +250,13 @@ abstract class AbstractRequest
                 }
                 break;
 
+            case 'float':
+                if (false === filter_var((int)$value, FILTER_VALIDATE_FLOAT) && ((int)$value != $value)) {
+                    throw new \InvalidArgumentException('Invalid type for ' . $key . '. It should be of type : '
+                                                        . $params[$key]['type'] . ' but it has a value of : ' .
+                                                        $value);
+                }
+                break;
             case 'positiveInteger':
             case 'negativeInteger':
             case 'integer':
@@ -387,8 +394,8 @@ abstract class AbstractRequest
         $signData   = [];
         $signParams = $this->getRequestParams();
         foreach ($signParams as $key => $value) {
-            if (!in_array($key, ['sign']) &&
-                //            if (!in_array($key, ['sign', 'sign_type']) &&
+//            if (!in_array($key, ['sign']) &&
+            if (!in_array($key, ['sign', 'sign_type']) &&
                 (false === $this->checkEmpty($value)) &&
                 ("@" != substr($value, 0, 1))
             ) {
