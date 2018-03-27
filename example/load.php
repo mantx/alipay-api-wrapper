@@ -1,4 +1,6 @@
 <?php
+require(dirname(__DIR__) . '/src/Alipay/AlipayClient.php');
+
 
 require(dirname(__DIR__) . '/src/Alipay/Request/AbstractRequest.php');
 require(dirname(__DIR__) . '/src/Alipay/Request/GlobalAbstractRequest.php');
@@ -11,6 +13,6 @@ require(dirname(__DIR__) . '/src/Alipay/Request/AlipayMerchantQrcodeRefundReques
 require(dirname(__DIR__) . '/src/Alipay/Request/AlipayMerchantQrcodeQueryRequest.php');
 
 
-
 require(dirname(__DIR__) . '/src/Alipay/Utils/Sign.php');
 require(dirname(__DIR__) . '/src/Alipay/Utils/Utility.php');
+require(dirname(__DIR__) . '/src/Alipay/Utils/SignData.php');

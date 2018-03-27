@@ -17,7 +17,7 @@ class AlipayClient
     //网关
     public $gatewayUrl = "https://openapi.alipay.com/gateway.do";
     //返回数据格式
-    public $format = "json";
+    public $format = "xml";
     //api版本
     public $apiVersion = "1.0";
 
@@ -25,7 +25,7 @@ class AlipayClient
     public $postCharset = "UTF-8";
 
     //签名类型
-    public $signType = "RSA";
+    public $signType = "MD5";
 
     public $encryptKey;
 
@@ -77,27 +77,17 @@ class AlipayClient
 
     public function getSignContent($params)
     {
-        ksort($params);
-
-        $stringToBeSigned = "";
-        $i                = 0;
-        foreach ($params as $k => $v) {
-            if (false === $this->checkEmpty($v) && "@" != substr($v, 0, 1)) {
+        $signData = [];
+        foreach ($params as $key => $value) {
+            if (false === $this->checkEmpty($value) && "@" != substr($value, 0, 1)) {
                 // 转换成目标字符集
-                $v = $this->characet($v, $this->postCharset);
-
-                if ($i == 0) {
-                    $stringToBeSigned .= "$k" . "=" . "$v";
-                } else {
-                    $stringToBeSigned .= "&" . "$k" . "=" . "$v";
-                }
-                $i++;
+                $value          = $this->characet($value, $this->postCharset);
+                $signData[$key] = $key . '=' . rawurldecode($value);
             }
         }
+        ksort($signData);
 
-        unset ($k, $v);
-
-        return $stringToBeSigned;
+        return implode('&', $signData);
     }
 
     /**
@@ -130,7 +120,7 @@ class AlipayClient
      * @return bool|mixed|\SimpleXMLElement
      * @throws \Exception
      */
-    public function execute(AbstractRequest $request, $authToken = null, $appInfoAuthtoken = null)
+    public function execute(AbstractRequest $request)
     {
         $this->setupCharsets($request);
 
@@ -142,58 +132,11 @@ class AlipayClient
 
         $iv = $this->apiVersion;
 
-
-        //组装系统参数
-        $sysParams["app_id"]         = $this->appId;
-        $sysParams["version"]        = $iv;
-        $sysParams["format"]         = $this->format;
-        $sysParams["sign_type"]      = $this->signType;
-        $sysParams["method"]         = '';//$request->getServiceMethod();
-        $sysParams["timestamp"]      = date("Y-m-d H:i:s");
-        $sysParams["auth_token"]     = $authToken;
-        $sysParams["alipay_sdk"]     = $this->alipaySdkVersion;
-        $sysParams["terminal_type"]  = $request->getTerminalType();
-        $sysParams["terminal_info"]  = $request->getTerminalInfo();
-        $sysParams["prod_code"]      = $request->getProdCode();
-        $sysParams["notify_url"]     = $request->getNotifyUrl();
-        $sysParams["charset"]        = $this->postCharset;
-        $sysParams["app_auth_token"] = $appInfoAuthtoken;
-
-        //获取业务参数
-        $apiParams = $request->getApiParas();
-
-        if (method_exists($request, "getNeedEncrypt") && $request->getNeedEncrypt()) {
-            $sysParams["encrypt_type"] = $this->encryptType;
-            if ($this->checkEmpty($apiParams['biz_content'])) {
-                throw new \Exception(" api request Fail! The reason : encrypt request is not supperted!");
-            }
-
-            if ($this->checkEmpty($this->encryptKey) || $this->checkEmpty($this->encryptType)) {
-                throw new \Exception(" encryptType and encryptKey must not null! ");
-            }
-
-            if ("AES" != $this->encryptType) {
-                throw new \Exception("加密类型只支持AES");
-            }
-
-            // 执行加密
-            $enCryptContent           = Encrypt::encrypt($apiParams['biz_content'], $this->encryptKey);
-            $apiParams['biz_content'] = $enCryptContent;
-        }
-
-        //签名
-        $sysParams["sign"] = $this->generateSign(array_merge($apiParams, $sysParams), $this->signType);
-
-        //系统参数放入GET请求串
-        $requestUrl = $this->gatewayUrl . "?";
-        foreach ($sysParams as $sysParamKey => $sysParamValue) {
-            $requestUrl .= "$sysParamKey=" . urlencode($this->characet($sysParamValue, $this->postCharset)) . "&";
-        }
-        $requestUrl = substr($requestUrl, 0, -1);
+        $apiParams = $request->getRequestParamsWithSign();
 
         //发起HTTP请求
         try {
-            $resp = $this->curl($requestUrl, $apiParams);
+            $resp = $this->curl('https://intlmapi.alipay.com/gateway.do', $apiParams);
         } catch (\Exception $e) {
 
 //            $this->logCommunicationError($sysParams["method"], $requestUrl, "HTTP_ERROR_" . $e->getCode(),
@@ -220,11 +163,11 @@ class AlipayClient
         } else {
             if ("xml" == $this->format) {
 
-                $respObject = @ simplexml_load_string($resp);
+                $respObject = json_decode(json_encode(@ simplexml_load_string($resp)), true);
                 if (false !== $respObject) {
                     $respWellFormed = true;
 
-                    $signData = $this->parserXMLSignData($request, $resp);
+                    $signData = $this->parserXMLSignData($respObject);
                 }
             }
         }
@@ -397,15 +340,12 @@ class AlipayClient
         return $responseJSon->sign;
     }
 
-    function parserXMLSignData($request, $responseContent)
+    function parserXMLSignData($response)
     {
-
-
         $signData = new SignData();
 
-        $signData->sign           = $this->parserXMLSign($responseContent);
-        $signData->signSourceData = $this->parserXMLSignSource($request, $responseContent);
-
+        $signData->sign           = $response['sign'];
+        $signData->signSourceData = $this->getSignContent($response['response']['qrcodeinfo']);
 
         return $signData;
     }
@@ -479,7 +419,7 @@ class AlipayClient
             ($this->checkEmpty($responseSubCode) && !$this->checkEmpty($signData->sign))
         ) {
 
-            $checkResult = Sign::rsaVerify($signData->signSourceData, $signData->sign, $this->signType);
+            $checkResult = Sign::verify($signData->signSourceData, $signData->sign, $this->signType);
 
 
             if (!$checkResult) {
@@ -510,8 +450,8 @@ class AlipayClient
     {
 
 
-        $apiName      = $request->getApiMethodName();
-        $rootNodeName = str_replace(".", "_", $apiName) . $this->RESPONSE_SUFFIX;
+        $apiName      = '';//$request->getApiMethodName();
+        $rootNodeName = 'response';//str_replace(".", "_", $apiName) . $this->RESPONSE_SUFFIX;
 
 
         $rootIndex  = strpos($responseContent, $rootNodeName);
@@ -536,7 +476,7 @@ class AlipayClient
 
     function parserXMLSource($responseContent, $nodeName, $nodeIndex)
     {
-        $signDataStartIndex = $nodeIndex + strlen($nodeName) + 1;
+        $signDataStartIndex = $nodeIndex;
         $signIndex          = strpos($responseContent, "<" . $this->SIGN_NODE_NAME . ">");
         // 签名前-逗号
         $signDataEndIndex = $signIndex - 1;
@@ -659,20 +599,20 @@ class AlipayClient
 
         if (is_array($postFields) && 0 < count($postFields)) {
 
-            foreach ($postFields as $k => $v) {
-                if ("@" != substr($v, 0, 1)) //判断是不是文件上传
+            foreach ($postFields as $key => $value) {
+                if ("@" != substr($value, 0, 1)) //判断是不是文件上传
                 {
 
-                    $postBodyString .= "$k=" . urlencode($this->characet($v, $this->postCharset)) . "&";
-                    $encodeArray[$k] = $this->characet($v, $this->postCharset);
+                    $postBodyString .= "$key=" . urlencode($this->characet($value, $this->postCharset)) . "&";
+                    $encodeArray[$key] = $this->characet($value, $this->postCharset);
                 } else //文件上传用multipart/form-data，否则用www-form-urlencoded
                 {
-                    $postMultipart   = true;
-                    $encodeArray[$k] = new \CURLFile(substr($v, 1));
+                    $postMultipart     = true;
+                    $encodeArray[$key] = new \CURLFile(substr($value, 1));
                 }
 
             }
-            unset ($k, $v);
+            unset ($key, $value);
             curl_setopt($ch, CURLOPT_POST, true);
             if ($postMultipart) {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $encodeArray);

@@ -51,8 +51,10 @@ $request = new \Alipay\Request\AlipayMerchantQrcodeCreateRequest([
     'notify_mobile'               => '13612345678'
 ]);
 try {
-    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
-    header('Location: ' . $url);
+//    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
+//    header('Location: ' . $url);
+    $client = new \Alipay\AlipayClient();
+    $response = $client->execute($request);
 } catch (Exception $e) {
     print($e->getMessage());
     var_dump($e->getTraceAsString());
