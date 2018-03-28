@@ -22,4 +22,20 @@ class Utility
 
         return mt_rand($start, $end);
     }
+
+
+    public static function checkEmpty($value)
+    {
+        if (!isset($value)) {
+            return true;
+        }
+        if ($value === null) {
+            return true;
+        }
+        if (trim($value) === "") {
+            return true;
+        }
+
+        return false;
+    }
 }

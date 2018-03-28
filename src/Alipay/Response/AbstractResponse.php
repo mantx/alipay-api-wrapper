@@ -6,7 +6,7 @@ use Alipay\Datatype\Base;
 use Alipay\Utils\Sign;
 use Alipay\Utils\Utility;
 
-abstract class AbstractRequest extends Base
+abstract class AbstractResponse extends Base
 {
     private static $params = [
         'sign'           => [
