@@ -24,6 +24,11 @@ abstract class GlobalAbstractRequest extends AbstractRequest
 
     protected $__serviceMethod;
 
+    public function getServiceAppId()
+    {
+        return $this->partner;
+    }
+
     /**
      * @return mixed
      */

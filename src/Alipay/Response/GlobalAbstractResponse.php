@@ -22,52 +22,6 @@ abstract class GlobalAbstractResponse extends AbstractResponse
         ],
     ];
 
-    protected $__serviceMethod;
-
-    /**
-     * @return mixed
-     */
-    public function getService()
-    {
-        return $this->service;
-    }
-
-    /**
-     * @param $value
-     */
-    public function setService($value)
-    {
-        $this->service = $value;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPartner()
-    {
-        return $this->partner;
-    }
-
-    /**
-     * @param $value
-     */
-    public function setPartner($value)
-    {
-        $this->partner = $value;
-    }
-
-    public function getParams()
-    {
-        $baseParams = parent::getParams();
-
-        return array_merge($baseParams, self::$params);
-    }
-
-    protected function initializeValues()
-    {
-        parent::initializeValues();
-        $this->setService($this->__serviceMethod);
-    }
 
 
 }

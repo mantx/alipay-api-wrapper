@@ -32,6 +32,7 @@ abstract class AbstractRequest extends Base
 
     protected $signSkippedParams = ['sign', 'sign_type'];
 
+    abstract public function getServiceAppId();
 
     /**
      * @return mixed
@@ -89,15 +90,6 @@ abstract class AbstractRequest extends Base
 
         return array_merge($baseParams, self::$params);
     }
-
-//    /**
-//     * @return mixed
-//     */
-//    public function getServiceMethod()
-//    {
-//        return $this->service;
-//    }
-
 
     public function getRequestParamsAsUrl()
     {
