@@ -135,5 +135,21 @@ class Utility
         return $text;
     }
 
+    public static function concatSignParams($signParams, $signSkippedParams = ['sign', 'sign_type'])
+    {
+        $signData   = [];
+        foreach ($signParams as $key => $value) {
+            if (!in_array($key, $signSkippedParams) &&
+                (false === Utility::checkEmpty($value)) &&
+                ("@" != substr($value, 0, 1))
+            ) {
+                $signData[$key] = $key . '=' . rawurldecode($value);
+            }
+        }
+        ksort($signData);
+
+        return implode('&', $signData);
+    }
+
 
 }

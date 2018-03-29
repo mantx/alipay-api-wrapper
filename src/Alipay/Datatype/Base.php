@@ -482,4 +482,9 @@ abstract class Base
         return true;
     }
 
+    public function toArray()
+    {
+        return $this->values;
+    }
+
 }

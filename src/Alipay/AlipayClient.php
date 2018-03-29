@@ -3,6 +3,7 @@
 namespace Alipay;
 
 use Alipay\Request\AbstractRequest;
+use Alipay\Response\AbstractResponse;
 use Alipay\Utils\Sign;
 use Alipay\Utils\Utility;
 
@@ -11,18 +12,18 @@ class AlipayClient
     //网关
     protected $gatewayUrl = "https://openapi.alipay.com/gateway.do";
 
-    protected $SIGN_NODE_NAME = "sign";
-
+    const SIGN_NODE_NAME = "sign";
+    const SIGN_TYPE_NODE_NAME = "sign_type";
+    const STATUS_NODE_NAME = 'is_success';
+    const ERROR_NODE_NAME = 'error';
 
     /**
      * @param AbstractRequest $request
-     * @param null            $authToken
-     * @param null            $appInfoAuthtoken
      *
-     * @return bool|mixed|\SimpleXMLElement
+     * @return mixed
      * @throws \Exception
      */
-    public function execute(AbstractRequest $request)
+    public function execute($request)
     {
         $apiParams = $request->getRequestParamsWithSign();
 
@@ -34,13 +35,23 @@ class AlipayClient
         } elseif (stristr($headers['Content-Type'], 'text/xml')) {
             $respObject = json_decode(json_encode(@ simplexml_load_string($resp['body'])), true);
         } else {
-            $respObject = $resp['body'];
+            return $resp['body'];
         }
 
-        // 验签
-//        $this->checkResponseSign($request, $signData, $resp, $respObject);
+        $this->checkReturnStatus($respObject);
 
-        return $respObject;
+        /** @var AbstractResponse $returnResponse */
+        $className      = get_class($request);
+        $className      = str_replace('Request', 'Response', $className);
+        $returnResponse = new $className();
+        $returnResponse->initFromResponse($respObject);
+
+        // 验签
+        $this->checkResponseSign($returnResponse->getSignContent(),
+            $respObject[self::SIGN_NODE_NAME],
+            $respObject[self::SIGN_TYPE_NODE_NAME]);
+
+        return $returnResponse;
     }
 
     protected function parseResponseHeaders($headerString)
@@ -50,7 +61,7 @@ class AlipayClient
         foreach ($headers as $header) {
             $header = explode(':', $header);
             if ($header) {
-                if (count($header) < 1) {
+                if (count($header) < 2) {
                     if (trim($header[0])) {
                         $result[trim($header[0])] = '';
                     }
@@ -74,45 +85,20 @@ class AlipayClient
      *
      * @throws Exception
      */
-    public function checkResponseSign($request, $signData, $resp, $respObject)
+    protected function checkResponseSign($signData, $sign, $signType)
     {
-        if ($signData == null || $this->checkEmpty($signData->sign) || $this->checkEmpty($signData->signSourceData)) {
+        $checkResult = Sign::verify($signData, $sign, $signType);
 
-            throw new \Exception(" check sign Fail! The reason : signData is Empty");
+        if (!$checkResult) {
+            throw new \Exception(sprintf('check sign Fail! [type=%s sign=%s signSourceData=%s',
+                $signType, $sign, $signData));
         }
+    }
 
-
-        // 获取结果sub_code
-        $responseSubCode = $this->parserResponseSubCode($request, $resp, $respObject, $this->format);
-
-
-        if (!$this->checkEmpty($responseSubCode) ||
-            ($this->checkEmpty($responseSubCode) && !$this->checkEmpty($signData->sign))
-        ) {
-
-            $checkResult = Sign::verify($signData->signSourceData, $signData->sign, $this->signType);
-
-
-            if (!$checkResult) {
-
-                if (strpos($signData->signSourceData, "\\/") > 0) {
-
-                    $signData->signSourceData = str_replace("\\/", "/", $signData->signSourceData);
-
-                    $checkResult = Sign::rsaVerify($signData->signSourceData, $signData->sign, $this->signType);
-
-                    if (!$checkResult) {
-                        throw new \Exception("check sign Fail! [sign=" . $signData->sign . ", signSourceData=" .
-                                             $signData->signSourceData . "]");
-                    }
-
-                } else {
-
-                    throw new \Exception("check sign Fail! [sign=" . $signData->sign . ", signSourceData=" .
-                                         $signData->signSourceData . "]");
-                }
-
-            }
+    protected function checkReturnStatus($response)
+    {
+        if ($response[self::STATUS_NODE_NAME] != 'T') {
+            throw new \Exception($response[self::ERROR_NODE_NAME]);
         }
     }
 

@@ -1,40 +1,48 @@
 <?php
 
-namespace Alipay\Request;
+namespace Alipay\Response;
 
 use Alipay\Datatype\Base;
-use Alipay\Utils\Sign;
 use Alipay\Utils\Utility;
 
 abstract class AbstractResponse extends Base
 {
     private static $params = [
-        'sign'           => [
-            'type'         => 'string',
-            'required'     => true,
-            'comment'      => 'See the “Digital Signature”',
-            'defaultValue' => ''
-        ],
-        'sign_type'      => [
-            'type'         => 'string',
-            'required'     => true,
-            'enumeration'  => 'DSA, RSA, RSA2, MD5',
-            'comment'      => 'Four values, namely, DSA, RSA, RSA2 and MD5 can be chosen; and must be capitalized',
-            'defaultValue' => 'RSA'
-        ],
-        '_input_charset' => [
-            'type'         => 'string',
-            'required'     => false,
-            'comment'      => 'The encoding format in merchant website such as utf-8, gbk and gb2312',
-            'defaultValue' => 'UTF-8'
-        ],
     ];
 
+    protected $__entityNode;
+
+    public function getDataEntityNodeInResponse()
+    {
+        return $this->__entityNode;
+    }
 
     public function getParams()
     {
         $baseParams = parent::getParams();
 
         return array_merge($baseParams, self::$params);
+    }
+
+    public function initFromResponse($object)
+    {
+        $accessNodes = $this->getDataEntityNodeInResponse();
+        $accessNodes = explode('.', $accessNodes);
+        foreach ($accessNodes as $node) {
+            if (isset($object[$node])) {
+                $object = $object[$node];
+            }
+        }
+
+        if (isset($object) && is_array($object)) {
+            foreach ($object as $key => $value) {
+                $this->{$key} = $value;
+            }
+        }
+    }
+
+    public function getSignContent()
+    {
+        return Utility::concatSignParams($this->values);
     }
 }

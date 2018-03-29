@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Alipay\Request;
+namespace Alipay\Response;
 
 
 abstract class GlobalAbstractResponse extends AbstractResponse

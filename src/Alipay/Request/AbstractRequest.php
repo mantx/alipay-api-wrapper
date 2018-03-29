@@ -127,18 +127,7 @@ abstract class AbstractRequest extends Base
 
     protected function getSignContent()
     {
-        $signData   = [];
         $signParams = $this->getRequestParams();
-        foreach ($signParams as $key => $value) {
-            if (!in_array($key, $this->signSkippedParams) &&
-                (false === Utility::checkEmpty($value)) &&
-                ("@" != substr($value, 0, 1))
-            ) {
-                $signData[$key] = $key . '=' . rawurldecode($value);
-            }
-        }
-        ksort($signData);
-
-        return implode('&', $signData);
+        return Utility::concatSignParams($signParams, $this->signSkippedParams);
     }
 }
