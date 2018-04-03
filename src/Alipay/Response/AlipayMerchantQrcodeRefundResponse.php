@@ -4,7 +4,7 @@
 namespace Alipay\Response;
 
 
-class AlipayMerchantQrcodeCreateResponse extends AlipayMerchantQrcodeResponse
+class AlipayMerchantQrcodeRefundResponse extends AlipayMerchantQrcodeResponse
 {
     private static $params = [
         //Business Parameter
@@ -12,11 +12,6 @@ class AlipayMerchantQrcodeCreateResponse extends AlipayMerchantQrcodeResponse
             'type'         => 'string',
             'required'     => true,
             'comment'      => 'QR Code',
-        ],
-        'qrcode_img_url' => [
-            'type'     => 'string',
-            'required' => true,
-            'comment'  => 'The URL of the QR Code.',
         ],
     ];
 
@@ -29,6 +24,4 @@ class AlipayMerchantQrcodeCreateResponse extends AlipayMerchantQrcodeResponse
 
         return array_merge($baseParams, self::$params);
     }
-
-
 }

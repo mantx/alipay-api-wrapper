@@ -118,18 +118,18 @@ class AlipayMerchantQrcodeCreateRequest extends AlipayMerchantQrcodeRequest
             'required' => false,
             'comment'  => 'Format: JSON string If the channel_fee exists when the QR code is created,' .
                           'then it can’t be deleted when the QR code is modified.',
-//        ],
-//        'country_code'                => [
-//            'type'         => 'string',
-//            'required'     => true,
-//            'length'       => 2,
-//            'comment'      => 'Refer to ISO 3166-1 Uor details. The country code consists of two letters (alpha-2 code).',
+        ],
+        'country_code'                => [
+            'type'         => 'string',
+            'required'     => false,
+            'length'       => 2,
+            'comment'      => 'Refer to ISO 3166-1 Uor details. The country code consists of two letters (alpha-2 code).',
 //            'defaultValue' => 'CN'
-//        ],
-//        'address'                     => [
-//            'type'     => 'string',
-//            'required' => true,
-//            'comment'  => 'The address of the store where the code is created.',
+        ],
+        'address'                     => [
+            'type'     => 'string',
+            'required' => true,
+            'comment'  => 'The address of the store where the code is created.',
         ],
         'passback_parameters'         => [
             'type'     => 'string',

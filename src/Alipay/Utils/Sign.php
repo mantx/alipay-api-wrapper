@@ -71,6 +71,10 @@ class Sign
      */
     public static function rsaSign($data, $signType = 'RSA')
     {
+        if (Utility::checkEmpty(self::$privateKey)) {
+            throw new \Exception('RSA private key is empty');
+        }
+
         $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
                wordwrap(self::$privateKey, 64, "\n", true) .
                "\n-----END RSA PRIVATE KEY-----";
@@ -96,6 +100,10 @@ class Sign
      */
     public static function rsaVerify($data, $sign, $signType = 'RSA')
     {
+        if (Utility::checkEmpty(self::$alipayPublicKey)) {
+            throw new \Exception('RSA public key is empty');
+        }
+
         $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
                wordwrap(self::$alipayPublicKey, 64, "\n", true) .
                "\n-----END RSA PRIVATE KEY-----";
@@ -117,6 +125,10 @@ class Sign
      */
     public static function md5Sign($data)
     {
+        if (Utility::checkEmpty(self::$md5Key)) {
+            throw new \Exception('md5 key is empty');
+        }
+
         return md5($data . self::$md5Key);
     }
 
@@ -129,6 +141,10 @@ class Sign
      */
     public static function md5Verify($data, $sign)
     {
+        if (Utility::checkEmpty(self::$md5Key)) {
+            throw new \Exception('md5 key is empty');
+        }
+
         return md5($data . self::$md5Key) === $sign;
     }
 
