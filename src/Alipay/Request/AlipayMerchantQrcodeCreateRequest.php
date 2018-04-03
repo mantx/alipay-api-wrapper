@@ -120,15 +120,15 @@ class AlipayMerchantQrcodeCreateRequest extends AlipayMerchantQrcodeRequest
                           'then it can’t be deleted when the QR code is modified.',
         ],
         'country_code'                => [
-            'type'         => 'string',
-            'required'     => false,
-            'length'       => 2,
-            'comment'      => 'Refer to ISO 3166-1 Uor details. The country code consists of two letters (alpha-2 code).',
-//            'defaultValue' => 'CN'
+            'type'     => 'string',
+            'required' => false,
+            'length'   => 2,
+            'comment'  => 'Refer to ISO 3166-1 Uor details. The country code consists of two letters (alpha-2 code).',
+            //            'defaultValue' => 'CN'
         ],
         'address'                     => [
             'type'     => 'string',
-            'required' => true,
+            'required' => false,
             'comment'  => 'The address of the store where the code is created.',
         ],
         'passback_parameters'         => [
@@ -545,7 +545,7 @@ class AlipayMerchantQrcodeCreateRequest extends AlipayMerchantQrcodeRequest
 
     protected function getRequestParams()
     {
-        $values     = [];
+        $values      = [];
         $basicParams = array_merge(parent::getParams(), self::$params);
         foreach ($basicParams as $key => $info) {
             $values[$key] = $this->{$key};

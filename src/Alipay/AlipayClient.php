@@ -27,7 +27,7 @@ class AlipayClient
     {
         $apiParams = $request->getRequestParamsWithSign();
 
-        $resp = Utility::curl('https://intlmapi.alipay.com/gateway.do', $apiParams, $request->getInputCharset());
+        $resp = Utility::curl('https://intlmapi.alipay.com/gateway.do?', $apiParams, $request->getInputCharset());
 
         $headers = $this->parseResponseHeaders($resp['header']);
         if (stristr($headers['Content-Type'], 'text/json')) {

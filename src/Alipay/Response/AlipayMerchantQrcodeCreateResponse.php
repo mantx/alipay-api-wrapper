@@ -30,5 +30,37 @@ class AlipayMerchantQrcodeCreateResponse extends AlipayMerchantQrcodeResponse
         return array_merge($baseParams, self::$params);
     }
 
+    /**
+     * @param $value
+     */
+    public function setQrcode($value)
+    {
+        $this->qrcode = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQrcode()
+    {
+        return $this->qrcode;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setQrcodeImgUrl($value)
+    {
+        $this->qrcode_img_url = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQrcodeImgUrl()
+    {
+        return $this->qrcode_img_url;
+    }
+
 
 }
