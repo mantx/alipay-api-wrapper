@@ -36,27 +36,43 @@ require_once("load.php");
 $request = new \Alipay\Request\AlipayMerchantQrcodeCreateRequest([
 //    'sign_type'                   => 'MD5',
 //    "partner"                     => trim($alipay_config['partner']),
-    "notify_url"                  => 'http://birdsystem/callback',
-    //    "_input_charset" => trim(strtolower($alipay_config['input_charset']))
+"notify_url"                  => 'http://birdsystem/callback',
+//    "_input_charset" => trim(strtolower($alipay_config['input_charset']))
 
-    //business params
-    'secondary_merchant_industry' => '5812',
-    'secondary_merchant_id'       => '123',
-    'secondary_merchant_name'     => 'shawn store',
-    'store_id'                    => 'A001',
-    'store_name'                  => '李老板的东馆',
-    'trans_currency'              => 'GBP',
-    'currency'                    => 'GBP',
-    //    'country_code'                => 'GB',
-    //    'address'                     => 'Hangzhou Delixi building',
-    'notify_mobile'               => '13612345678'
+//business params
+'secondary_merchant_industry' => '5812',
+'secondary_merchant_id'       => '123',
+'secondary_merchant_name'     => 'shawn store',
+'store_id'                    => 'A001',
+'store_name'                  => '李老板的东馆',
+'trans_currency'              => 'GBP',
+'currency'                    => 'GBP',
+//    'country_code'                => 'GB',
+//    'address'                     => 'Hangzhou Delixi building',
+'notify_mobile'               => '13612345678'
 ]);
+
+//method 2
+//$request = new \Alipay\Request\AlipayMerchantQrcodeCreateRequest();
+//$request->setNotifyUrl('http://birdsystem/callback');
+//$request->setSecondaryMerchantIndustry('5812');
+//$request->setSecondaryMerchantId('123');
+//$request->setSecondaryMerchantName('shawn store');
+//$request->setStoreId('A001');
+//$request->setStoreName('李老板的东馆');
+//$request->setTransCurrency('GBP');
+//$request->setCurrency('GBP');
+//$request->setNotifyMobile('13612345678');
+
+$client = new \Alipay\AlipayClient();
+
 try {
-//    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
+//    $url = $client->getAccessPointUrl($request) . $request->getRequestParamsAsUrl();
 //    header('Location: ' . $url);
-    $client = new \Alipay\AlipayClient();
     $response = $client->execute($request);
-    var_dump($response->toArray());
+//    var_dump($response->toArray());
+    var_dump($response->getQrcode());
+    var_dump($response->getQrcodeImgUrl());
 } catch (Exception $e) {
     print($e->getMessage());
     var_dump($e->getTraceAsString());
