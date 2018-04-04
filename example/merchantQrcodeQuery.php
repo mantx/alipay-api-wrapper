@@ -26,20 +26,27 @@ require_once("alipay.config.php");
 require_once("load.php");
 
 //require(dirname(__DIR__) . '/vendor/autoload.php');
+\Alipay\Utils\Config::initConfig($alipay_config);
 
-\Alipay\Utils\Sign::setPrivateKey($alipay_config['private_key']);
-\Alipay\Utils\Sign::setAlipayPublicKey($alipay_config['alipay_public_key']);
+
+//\Alipay\Utils\Sign::setPrivateKey($alipay_config['private_key']);
+//\Alipay\Utils\Sign::setAlipayPublicKey($alipay_config['alipay_public_key']);
+//\Alipay\Utils\Sign::setMd5Key($alipay_config['md5_key']);
 
 //建立请求
 $request = new \Alipay\Request\AlipayMerchantQrcodeQueryRequest([
-    "partner"           => trim($alipay_config['partner']),
+//    'sign_type'        => 'MD5',
+//    "partner"          => trim($alipay_config['partner']),
     //business params
-    'partner_trans_id'  => '23412341234',
+    'partner_trans_id' => '23412341234',
 
 ]);
 try {
-    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
-    header('Location: ' . $url);
+//    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
+//    header('Location: ' . $url);
+    $client   = new \Alipay\AlipayClient();
+    $response = $client->execute($request);
+    var_dump($response->toArray());
 } catch (Exception $e) {
     print($e->getMessage());
     var_dump($e->getTraceAsString());

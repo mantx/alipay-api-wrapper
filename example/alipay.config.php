@@ -35,7 +35,7 @@ $alipay_config['md5_key'] = '9zuyogtrxxi3iux2hz4lbwpiiy0uc0ha';
 
 
 //签名方式 不需修改
-$alipay_config['sign_type']    = strtoupper('RSA');
+$alipay_config['sign_type']    = strtoupper('MD5');
 
 //字符编码格式 目前支持 gbk 或 utf-8
 $alipay_config['input_charset']= strtolower('utf-8');

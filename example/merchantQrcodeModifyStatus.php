@@ -26,22 +26,29 @@ require_once("alipay.config.php");
 require_once("load.php");
 
 //require(dirname(__DIR__) . '/vendor/autoload.php');
+\Alipay\Utils\Config::initConfig($alipay_config);
 
-\Alipay\Utils\Sign::setPrivateKey($alipay_config['private_key']);
-\Alipay\Utils\Sign::setAlipayPublicKey($alipay_config['alipay_public_key']);
+//\Alipay\Utils\Sign::setPrivateKey($alipay_config['private_key']);
+//\Alipay\Utils\Sign::setAlipayPublicKey($alipay_config['alipay_public_key']);
+//\Alipay\Utils\Sign::setMd5Key($alipay_config['md5_key']);
 
 //建立请求
 $request = new \Alipay\Request\AlipayMerchantQrcodeModifyStatusRequest([
-    "partner"    => trim($alipay_config['partner']),
-    "notify_url" => 'http://birdsystem/callback',
-    'qrcode'     => 'asdfadfadf',
+//    'sign_type'                   => 'MD5',
+//    "partner"                     => trim($alipay_config['partner']),
+    "notify_url"                  => 'http://birdsystem/callback',
+    'qrcode'                      => 'https://qr.alipay.com/ocx05811ahtyjxgkdsy948b',
+    //business parameters
     'status'     => \Alipay\Request\AlipayMerchantQrcodeModifyStatusRequest::STATUS_STOP
     //    "_input_charset" => trim(strtolower($alipay_config['input_charset']))
 
 ]);
 try {
-    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
-    header('Location: ' . $url);
+//    $url = 'https://intlmapi.alipay.com/gateway.do?' . $request->getRequestParamsAsUrl();
+//    header('Location: ' . $url);
+    $client = new \Alipay\AlipayClient();
+    $response = $client->execute($request);
+    var_dump($response->toArray());
 } catch (Exception $e) {
     print($e->getMessage());
     var_dump($e->getTraceAsString());
