@@ -74,5 +74,16 @@ abstract class GlobalAbstractRequest extends AbstractRequest
         $this->setService($this->__serviceMethod);
     }
 
+    public function checkResponse($request)
+    {
+        if (!in_array($this->getService(), $request['param'])) {
+            throw new \Exception('The service in response does not match the one in request');
+        }
+
+        if (!in_array($this->getSign(), $request['param'])) {
+            throw new \Exception('The sign in response does not match the one in request');
+        }
+    }
+
 
 }

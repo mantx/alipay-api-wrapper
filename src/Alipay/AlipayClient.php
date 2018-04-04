@@ -25,6 +25,7 @@ class AlipayClient
     const SIGN_TYPE_NODE_NAME = "sign_type";
     const STATUS_NODE_NAME = 'is_success';
     const ERROR_NODE_NAME = 'error';
+    const REQUEST_NODE_NAME = "request";
 
     /**
      * @param AbstractRequest $request
@@ -36,15 +37,7 @@ class AlipayClient
     {
         $apiParams = $request->getRequestParamsWithSign();
 
-        $accessPointUrl = $request instanceof GlobalAbstractRequest ?
-            $this->gatewayUrl4Global :
-            $this->gatewayUrl4Domestic;
-
-        $accessPointUrl = Config::getSandbox() ?
-            $accessPointUrl['sandbox'] :
-            $accessPointUrl['production'];
-
-        $resp           = Utility::curl($accessPointUrl, $apiParams, $request->getInputCharset());
+        $resp = Utility::curl($this->getAccessPointUrl($request), $apiParams, $request->getInputCharset());
 
         $headers = $this->parseResponseHeaders($resp['header']);
         if (stristr($headers['Content-Type'], 'text/json')) {
@@ -56,6 +49,7 @@ class AlipayClient
         }
 
         $this->checkReturnStatus($respObject);
+        $request->checkResponse($respObject[self::REQUEST_NODE_NAME]);
 
         /** @var AbstractResponse $returnResponse */
         $className      = get_class($request);
@@ -69,6 +63,17 @@ class AlipayClient
             $respObject[self::SIGN_TYPE_NODE_NAME]);
 
         return $returnResponse;
+    }
+
+    public function getAccessPointUrl($request)
+    {
+        $accessPointUrl = $request instanceof GlobalAbstractRequest ?
+            $this->gatewayUrl4Global :
+            $this->gatewayUrl4Domestic;
+
+        return Config::getSandbox() ?
+            $accessPointUrl['sandbox'] :
+            $accessPointUrl['production'];
     }
 
     protected function parseResponseHeaders($headerString)

@@ -72,4 +72,116 @@ class AlipayMerchantQrcodeCancelResponse extends AlipayMerchantQrcodeResponse
 
         return array_merge($baseParams, self::$params);
     }
+
+    /**
+     * @param $value
+     */
+    public function setResultCode($value)
+    {
+        $this->result_code = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResultCode()
+    {
+        return $this->result_code;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setOutTradeNo($value)
+    {
+        $this->out_trade_no = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOutTradeNo()
+    {
+        return $this->out_trade_no;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTradeNo($value)
+    {
+        $this->trade_no = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTradeNo()
+    {
+        return $this->trade_no;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setRetryFlag($value)
+    {
+        $this->retry_flag = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRetryFlag()
+    {
+        return $this->retry_flag;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setAction($value)
+    {
+        $this->action = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setDetailErrorCode($value)
+    {
+        $this->detail_error_code = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDetailErrorCode()
+    {
+        return $this->detail_error_code;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setDetailErrorDes($value)
+    {
+        $this->detail_error_des = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDetailErrorDes()
+    {
+        return $this->detail_error_des;
+    }
 }
