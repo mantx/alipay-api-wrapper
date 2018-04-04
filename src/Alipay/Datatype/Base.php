@@ -2,6 +2,7 @@
 
 namespace Alipay\Datatype;
 
+use Alipay\Utils\Config;
 use Alipay\Utils\Utility;
 
 /**
@@ -13,6 +14,10 @@ abstract class Base
 {
     const DEFAULT_VALUE_CURRENT_TIME = 'CALL FUNCTION:DEFAULT_VALUE_CURRENT_TIME';
     const DEFAULT_VALUE_RAMDEOM_NUMBER = 'CALL FUNCTION:DEFAULT_VALUE_RAMDEOM_NUMBER';
+    const DEFAULT_VALUE_CONFIG_PARTNER = 'CONFIG GET:getPartner';
+    const DEFAULT_VALUE_CONFIG_INPUT_CHARSET = 'CONFIG GET:getInputCharset';
+    const DEFAULT_VALUE_CONFIG_SIGN_TYPE = 'CONFIG GET:getSignType';
+    const DEFAULT_VALUE_CONFIG_APP_ID = 'CONFIG GET:getAppId';
 
     protected $values = [];
 
@@ -306,6 +311,14 @@ abstract class Base
                     $this->values[$name] = Utility::currentTime();
                 } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_RAMDEOM_NUMBER) {
                     $this->values[$name] = Utility::randomNumber();
+                } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_SIGN_TYPE) {
+                    $this->values[$name] = Config::getSignType();
+                } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_INPUT_CHARSET) {
+                    $this->values[$name] = Config::getInputCharset();
+                } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_PARTNER) {
+                    $this->values[$name] = Config::getPartner();
+                } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_APP_ID) {
+                    $this->values[$name] = Config::getAppId();
                 } else {
                     $this->values[$name] = $infos['defaultValue'];
                 }

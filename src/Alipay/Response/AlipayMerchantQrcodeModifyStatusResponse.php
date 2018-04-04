@@ -24,4 +24,20 @@ class AlipayMerchantQrcodeModifyStatusResponse extends AlipayMerchantQrcodeRespo
 
         return array_merge($baseParams, self::$params);
     }
+
+    /**
+     * @param $value
+     */
+    public function setQrcode($value)
+    {
+        $this->qrcode = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQrcode()
+    {
+        return $this->qrcode;
+    }
 }

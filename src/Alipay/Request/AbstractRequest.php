@@ -20,13 +20,13 @@ abstract class AbstractRequest extends Base
             'required'     => true,
             'enumeration'  => 'DSA, RSA, RSA2, MD5',
             'comment'      => 'Four values, namely, DSA, RSA, RSA2 and MD5 can be chosen; and must be capitalized',
-            'defaultValue' => 'RSA'
+            'defaultValue' => self::DEFAULT_VALUE_CONFIG_SIGN_TYPE
         ],
         '_input_charset' => [
             'type'         => 'string',
             'required'     => false,
             'comment'      => 'The encoding format in merchant website such as utf-8, gbk and gb2312',
-            'defaultValue' => 'UTF-8'
+            'defaultValue' => self::DEFAULT_VALUE_CONFIG_INPUT_CHARSET
         ],
     ];
 

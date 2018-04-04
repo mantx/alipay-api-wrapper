@@ -18,7 +18,7 @@ abstract class GlobalAbstractRequest extends AbstractRequest
             'required'     => true,
             'comment'      => 'The Alipay account generated when signing with Alipay; its length is 16, and it begins with 2088',
             'length'       => '16',
-            'defaultValue' => ''
+            'defaultValue' => self::DEFAULT_VALUE_CONFIG_PARTNER
         ],
     ];
 

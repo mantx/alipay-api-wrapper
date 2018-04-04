@@ -8,7 +8,7 @@ class AlipayMerchantQrcodeCancelResponse extends AlipayMerchantQrcodeResponse
 {
     private static $params = [
         //Business Parameter
-        'result_code'  => [
+        'result_code'       => [
             'type'      => 'string',
             'required'  => true,
             'comment'   => 'Response code of cancel processing result.' .
@@ -17,25 +17,50 @@ class AlipayMerchantQrcodeCancelResponse extends AlipayMerchantQrcodeResponse
                            'UNKNOWN: unknown result',
             'maxLength' => 32
         ],
-        'out_trade_no' => [
-            'type'     => 'string',
-            'required' => false,
-            'comment'  => 'Unique order No. in Alipay’s merchant’s website',
+        'out_trade_no'      => [
+            'type'      => 'string',
+            'required'  => false,
+            'comment'   => 'Unique order No. in Alipay’s merchant’s website',
+            'maxLength' => 64
         ],
-        'trade_no'     => [
-            'type'     => 'string',
-            'required' => false,
-            'comment'  => 'The trade serial number of the trade in Alipay system.' .
-                          '16 bits at least and 64 bits at most.' .
-                          'If out_trade_no and  trade_no are transmitted at the same time, trade_no shall govern.',
+        'trade_no'          => [
+            'type'      => 'string',
+            'required'  => false,
+            'comment'   => 'The trade serial number of the trade in Alipay system.' .
+                           '16 bits at least and 64 bits at most.' .
+                           'If out_trade_no and  trade_no are transmitted at the same time, trade_no shall govern.',
+            'maxLength' => 64
         ],
-        'retry_flag'    => [
+        'retry_flag'        => [
             'type'     => 'string',
             'required' => false,
             'comment'  => 'Y: The cancel failed due to retriable error' .
                           'N: The cancel failed due to non-retriable error',
             'length'   => 1
         ],
+        'action'            => [
+            'type'      => 'string',
+            'required'  => false,
+            'comment'   => 'The action of cancel.' .
+                           'close: only closed the transaction, but no refund.' .
+                           'refund: had a refund.',
+            'maxLength' => 10
+        ],
+        'detail_error_code' => [
+            'type'      => 'string',
+            'required'  => false,
+            'comment'   => 'Give cause description to the response code returned.' .
+                           'Please refer to “8.1 Business Error Code”.' .
+                           'If the response code of result_code is SUCCESS, this parameter shall not be returned.',
+            'maxLength' => 48
+        ],
+        'detail_error_des'  => [
+            'type'      => 'string',
+            'required'  => false,
+            'comment'   => 'Give literal statement as to the detailed error code.' .
+                           'If the response code of result_code is SUCCESS, this parameter shall not be returned.',
+            'maxLength' => 64
+        ]
     ];
 
     protected $__entityNode = 'response.alipay';

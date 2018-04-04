@@ -3,14 +3,23 @@
 namespace Alipay;
 
 use Alipay\Request\AbstractRequest;
+use Alipay\Request\GlobalAbstractRequest;
 use Alipay\Response\AbstractResponse;
+use Alipay\Utils\Config;
 use Alipay\Utils\Sign;
 use Alipay\Utils\Utility;
 
 class AlipayClient
 {
     //网关
-    protected $gatewayUrl = "https://openapi.alipay.com/gateway.do";
+    protected $gatewayUrl4Global = [
+        'sandbox'    => 'https://openapi.alipaydev.com/gateway.do?',
+        'production' => 'https://intlmapi.alipay.com/gateway.do?'
+    ];
+    protected $gatewayUrl4Domestic = [
+        'sandbox'    => 'https://openapi.alipaydev.com/gateway.do?',
+        'production' => 'https://openapi.alipay.com/gateway.do?'
+    ];
 
     const SIGN_NODE_NAME = "sign";
     const SIGN_TYPE_NODE_NAME = "sign_type";
@@ -27,7 +36,15 @@ class AlipayClient
     {
         $apiParams = $request->getRequestParamsWithSign();
 
-        $resp = Utility::curl('https://intlmapi.alipay.com/gateway.do?', $apiParams, $request->getInputCharset());
+        $accessPointUrl = $request instanceof GlobalAbstractRequest ?
+            $this->gatewayUrl4Global :
+            $this->gatewayUrl4Domestic;
+
+        $accessPointUrl = Config::getSandbox() ?
+            $accessPointUrl['sandbox'] :
+            $accessPointUrl['production'];
+
+        $resp           = Utility::curl($accessPointUrl, $apiParams, $request->getInputCharset());
 
         $headers = $this->parseResponseHeaders($resp['header']);
         if (stristr($headers['Content-Type'], 'text/json')) {
