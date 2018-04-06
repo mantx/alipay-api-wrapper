@@ -163,7 +163,7 @@ abstract class Base
     }
 
 
-    public function getParams()
+    public function getAllParams()
     {
         return self::$params;
     }
@@ -190,7 +190,7 @@ abstract class Base
         }
 
         $xmlWriter->startElement($parentNode);
-        $params = $this->getParams();
+        $params = $this->getAllParams();
         foreach ($params as $name => $infos) {
             if ($infos['required'] || $this->$name) {
                 $xmlNodeName = isset($infos['xmlNodeName']) ? $infos['xmlNodeName'] : null;
@@ -238,7 +238,7 @@ abstract class Base
         $name,
         $content
     ) {
-        $params = $this->getParams();
+        $params = $this->getAllParams();
         $infos  = $params[$name];
         switch ($infos['type']) {
             case 'boolean' :
@@ -263,7 +263,7 @@ abstract class Base
      */
     public function initFromXML($xml)
     {
-        $params = $this->getParams();
+        $params = $this->getAllParams();
 
         $xml       = simplexml_load_string(str_replace('req:', '', $xml));
         $parts     = explode('\\', get_class($this));
@@ -296,7 +296,7 @@ abstract class Base
 
     protected function initializeValues()
     {
-        $params = $this->getParams();
+        $params = $this->getAllParams();
         foreach ($params as $name => $infos) {
             if (isset($infos['multivalues']) && $infos['multivalues']) {
                 $this->values[$name] = array();
@@ -314,7 +314,7 @@ abstract class Base
                 } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_SIGN_TYPE) {
                     $this->values[$name] = Config::getSignType();
                 } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_INPUT_CHARSET) {
-                    $this->values[$name] = Config::getInputCharset();
+                    $this->values[$name] = Config::getCharset();
                 } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_PARTNER) {
                     $this->values[$name] = Config::getPartner();
                 } elseif ($infos['defaultValue'] === self::DEFAULT_VALUE_CONFIG_APP_ID) {
@@ -336,7 +336,7 @@ abstract class Base
      */
     protected function validateParams()
     {
-        $params = $this->getParams();
+        $params = $this->getAllParams();
         foreach ($params as $name => $infos) {
             if ($this->values[$name]) {
                 if (is_array($this->values[$name]) && isset($infos['subobject']) && true === $infos['subobject']) {
@@ -366,7 +366,7 @@ abstract class Base
      */
     protected function validateParameterType($key, $value)
     {
-        $params = $this->getParams();
+        $params = $this->getAllParams();
         if (null === $value) {
             return true;
         }
@@ -383,7 +383,7 @@ abstract class Base
                                                                 ' but it has a value of : ' . $subvalue);
                         }
                     }
-                } elseif ($value !== (string)$value) {
+                } elseif ($value != (string)$value) {
                     throw new \InvalidArgumentException('Invalid type for ' . $key . '. It should be of type : '
                                                         . $params[$key]['type'] . ' but it has a value of : ' .
                                                         $value);
@@ -436,7 +436,7 @@ abstract class Base
      */
     protected function validateParameterValue($key, $value)
     {
-        $params = $this->getParams();
+        $params = $this->getAllParams();
 
         foreach ($params[$key] as $type => $typeValue) {
             switch ($type) {

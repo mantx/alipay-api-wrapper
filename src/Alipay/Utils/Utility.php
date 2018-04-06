@@ -15,7 +15,7 @@ class Utility
     {
         $start = 1;
         $end   = 9;
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 1; $i < $length; $i++) {
             $start *= 10;
             $end = $end * 10 + $end;
         }

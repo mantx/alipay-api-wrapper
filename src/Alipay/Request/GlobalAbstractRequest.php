@@ -20,6 +20,12 @@ abstract class GlobalAbstractRequest extends AbstractRequest
             'length'       => '16',
             'defaultValue' => self::DEFAULT_VALUE_CONFIG_PARTNER
         ],
+        '_input_charset' => [
+            'type'         => 'string',
+            'required'     => false,
+            'comment'      => 'The encoding format in merchant website such as utf-8, gbk and gb2312',
+            'defaultValue' => self::DEFAULT_VALUE_CONFIG_INPUT_CHARSET
+        ],
     ];
 
     protected $__serviceMethod;
@@ -61,11 +67,45 @@ abstract class GlobalAbstractRequest extends AbstractRequest
         $this->partner = $value;
     }
 
-    public function getParams()
+    /**
+     * @return mixed
+     */
+    public function getInputCharset()
     {
-        $baseParams = parent::getParams();
+        return $this->_input_charset;
+    }
 
-        return array_merge($baseParams, self::$params);
+    /**
+     * @param $value
+     */
+    public function setInputCharset($value)
+    {
+        $this->_input_charset = $value;
+    }
+
+    public function getBasicParams()
+    {
+        return array_merge(parent::getBasicParams(), self::$params);
+    }
+
+    /**
+     * business params
+     *
+     * @return array
+     */
+    protected function getBusinessParams()
+    {
+        return [];
+    }
+
+    /**
+     * extend params
+     *
+     * @return array
+     */
+    protected function getExtendParams()
+    {
+        return [];
     }
 
     protected function initializeValues()

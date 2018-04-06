@@ -102,11 +102,9 @@ class AlipayMerchantQrcodeCancelRequest extends AlipayMerchantQrcodeRequest
         $this->trade_no = $value;
     }
 
-    public function getParams()
+    public function getBasicParams()
     {
-        $baseParams = parent::getParams();
-
-        return array_merge($baseParams, self::$params);
+        return array_merge(parent::getBasicParams(), self::$params);
     }
 
 }

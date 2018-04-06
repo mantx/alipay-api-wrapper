@@ -22,12 +22,6 @@ abstract class AbstractRequest extends Base
             'comment'      => 'Four values, namely, DSA, RSA, RSA2 and MD5 can be chosen; and must be capitalized',
             'defaultValue' => self::DEFAULT_VALUE_CONFIG_SIGN_TYPE
         ],
-        '_input_charset' => [
-            'type'         => 'string',
-            'required'     => false,
-            'comment'      => 'The encoding format in merchant website such as utf-8, gbk and gb2312',
-            'defaultValue' => self::DEFAULT_VALUE_CONFIG_INPUT_CHARSET
-        ],
     ];
 
     protected $signSkippedParams = ['sign', 'sign_type'];
@@ -65,30 +59,42 @@ abstract class AbstractRequest extends Base
     {
         $this->sign_type = $value;
     }
-
-
     /**
-     * @return mixed
+     * basic params
+     *
+     * @return array
      */
-    public function getInputCharset()
+    public function getBasicParams()
     {
-        return $this->_input_charset;
-    }
-
-    /**
-     * @param $value
-     */
-    public function setInputCharset($value)
-    {
-        $this->_input_charset = $value;
-    }
-
-
-    public function getParams()
-    {
-        $baseParams = parent::getParams();
+        $baseParams = parent::getAllParams();
 
         return array_merge($baseParams, self::$params);
+    }
+
+    /**
+     * business params
+     *
+     * @return array
+     */
+    abstract protected function getBusinessParams();
+
+    /**
+     * extend params
+     *
+     * @return array
+     */
+    abstract protected function getExtendParams();
+
+    /**
+     * all params, including basic/business/extend params altogether
+     *
+     * @return array
+     */
+    public function getAllParams()
+    {
+        return array_merge($this->getBasicParams(),
+            $this->getBusinessParams(),
+            $this->getExtendParams());
     }
 
     public function getRequestParamsAsUrl()

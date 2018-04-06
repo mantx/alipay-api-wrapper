@@ -46,9 +46,9 @@ class Sign
             throw new \Exception('RSA public key is empty');
         }
 
-        $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
-               wordwrap(Config::getAlipayPublicKey(), 64, "\n", true) .
-               "\n-----END RSA PRIVATE KEY-----";
+        $res    = "-----BEGIN PUBLIC KEY-----\n" .
+                  wordwrap(Config::getAlipayPublicKey(), 64, "\n", true) .
+                  "\n-----END PUBLIC KEY-----";
 
         if ("RSA2" == $signType) {
             $result = (bool)openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256);

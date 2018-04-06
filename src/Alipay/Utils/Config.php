@@ -20,7 +20,7 @@ class Config
         'alipay_public_key' => '',
 
         //UTF-8, GBK
-        'input_charset'     => 'UTF-8',
+        'charset'     => 'UTF-8',
 
         //DSA, RSA, RSA2, MD5
         'sign_type'         => 'MD5',
@@ -124,17 +124,17 @@ class Config
     /**
      * @return mixed
      */
-    public static function getInputCharset()
+    public static function getCharset()
     {
-        return self::$allConfig['input_charset'];
+        return self::$allConfig['charset'];
     }
 
     /**
      * @param mixed $alipayPublicKey
      */
-    public static function setInputCharset($charset = 'UTF-8')
+    public static function setCharset($charset = 'UTF-8')
     {
-        self::$allConfig['input_charset'] = $charset;
+        self::$allConfig['charset'] = $charset;
     }
 
 

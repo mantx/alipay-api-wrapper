@@ -17,9 +17,9 @@ abstract class AbstractResponse extends Base
         return $this->__entityNode;
     }
 
-    public function getParams()
+    public function getAllParams()
     {
-        $baseParams = parent::getParams();
+        $baseParams = parent::getAllParams();
 
         return array_merge($baseParams, self::$params);
     }

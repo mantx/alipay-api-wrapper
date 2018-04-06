@@ -4,7 +4,7 @@
 namespace Alipay\Request;
 
 
-abstract class AlipayMerchantQrcodeRequest extends GlobalAbstractRequest
+abstract class AlipayTradeRequest extends DomesticAbstractRequest
 {
 
 }
