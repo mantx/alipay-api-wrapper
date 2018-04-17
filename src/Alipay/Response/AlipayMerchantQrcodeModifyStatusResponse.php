@@ -18,9 +18,9 @@ class AlipayMerchantQrcodeModifyStatusResponse extends AlipayMerchantQrcodeRespo
     protected $__entityNode = 'response.qrcodeinfo';
 
 
-    public function getAllParams()
+    public function getStaticBasicParams()
     {
-        $baseParams = parent::getAllParams();
+        $baseParams = parent::getStaticBasicParams();
 
         return array_merge($baseParams, self::$params);
     }

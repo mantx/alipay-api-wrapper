@@ -9,13 +9,13 @@ use Alipay\Utils\Utility;
 abstract class AbstractRequest extends Base
 {
     private static $params = [
-        'sign'           => [
+        'sign'      => [
             'type'         => 'string',
             'required'     => true,
             'comment'      => 'See the “Digital Signature”',
             'defaultValue' => ''
         ],
-        'sign_type'      => [
+        'sign_type' => [
             'type'         => 'string',
             'required'     => true,
             'enumeration'  => 'DSA, RSA, RSA2, MD5',
@@ -59,12 +59,13 @@ abstract class AbstractRequest extends Base
     {
         $this->sign_type = $value;
     }
+
     /**
      * basic params
      *
      * @return array
      */
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
         $baseParams = parent::getAllParams();
 
@@ -76,14 +77,14 @@ abstract class AbstractRequest extends Base
      *
      * @return array
      */
-    abstract protected function getBusinessParams();
+    abstract protected function getStaticBusinessParams();
 
     /**
      * extend params
      *
      * @return array
      */
-    abstract protected function getExtendParams();
+    abstract protected function getStaticExtendParams();
 
     /**
      * all params, including basic/business/extend params altogether
@@ -92,9 +93,9 @@ abstract class AbstractRequest extends Base
      */
     public function getAllParams()
     {
-        return array_merge($this->getBasicParams(),
-            $this->getBusinessParams(),
-            $this->getExtendParams());
+        return array_merge($this->getStaticBasicParams(),
+            $this->getStaticBusinessParams(),
+            $this->getStaticExtendParams());
     }
 
     public function getRequestParamsAsUrl()
@@ -134,6 +135,7 @@ abstract class AbstractRequest extends Base
     protected function getSignContent()
     {
         $signParams = $this->getRequestParams();
+
         return Utility::concatSignParams($signParams, $this->signSkippedParams);
     }
 }

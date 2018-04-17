@@ -536,24 +536,24 @@ class AlipayMerchantQrcodeCreateRequest extends AlipayMerchantQrcodeRequest
         $this->notify_alipay_account = $value;
     }
 
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
-        return array_merge(parent::getBasicParams(), self::$params);
+        return array_merge(parent::getStaticBasicParams(), self::$params);
     }
 
-    protected function getBusinessParams()
+    protected function getStaticBusinessParams()
     {
-        return array_merge(parent::getBusinessParams(), self::$bizDataParams);
+        return array_merge(parent::getStaticBusinessParams(), self::$bizDataParams);
     }
 
     protected function getRequestParams()
     {
-        foreach ($this->getBasicParams() as $key => $info) {
+        foreach ($this->getStaticBasicParams() as $key => $info) {
             $values[$key] = $this->{$key};
         }
 
         $bizValues = [];
-        foreach ($this->getBusinessParams() as $key => $info) {
+        foreach ($this->getStaticBusinessParams() as $key => $info) {
             if ($this->{$key}) {
                 $bizValues[$key] = $this->{$key};
             }

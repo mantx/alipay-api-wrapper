@@ -3,6 +3,7 @@
 namespace Alipay;
 
 use Alipay\Request\AbstractRequest;
+use Alipay\Request\DomesticAbstractRequest;
 use Alipay\Request\GlobalAbstractRequest;
 use Alipay\Response\AbstractResponse;
 use Alipay\Utils\Config;
@@ -37,19 +38,27 @@ class AlipayClient
     {
         $apiParams = $request->getRequestParamsWithSign();
 
-        $resp = Utility::curl($this->getAccessPointUrl($request), $apiParams, $request->getInputCharset());
+        $resp = Utility::curl($this->getAccessPointUrl($request), $apiParams, Config::getCharset());
 
         $headers = $this->parseResponseHeaders($resp['header']);
         if (stristr($headers['Content-Type'], 'text/json')) {
-            $respObject = json_decode($resp['body']);
+            $respObject = json_decode($resp['body'], true);
         } elseif (stristr($headers['Content-Type'], 'text/xml')) {
             $respObject = json_decode(json_encode(@ simplexml_load_string($resp['body'])), true);
         } else {
-            return $resp['body'];
+            if (($request instanceof DomesticAbstractRequest) &&
+                (strtolower($request->getFormat()) == 'json')
+            ) {
+                $respObject = json_decode($resp['body'], true);
+            } else {
+                return $resp['body'];
+            }
         }
 
-        $this->checkReturnStatus($respObject);
-        $request->checkResponse($respObject[self::REQUEST_NODE_NAME]);
+        if ($request instanceof GlobalAbstractRequest) {
+            $this->checkReturnStatus($respObject);
+            $request->checkResponse($respObject[self::REQUEST_NODE_NAME]);
+        }
 
         /** @var AbstractResponse $returnResponse */
         $className      = get_class($request);
@@ -57,12 +66,44 @@ class AlipayClient
         $returnResponse = new $className();
         $returnResponse->initFromResponse($respObject);
 
+        if ($request instanceof GlobalAbstractRequest) {
+            $contentSign = $returnResponse->getSignContent();
+        } else {
+            $contentSign = $this->parserJSONSignSource($returnResponse->getDataEntityNodeInResponse(),
+                $resp['body']);
+        }
+
         // 验签
-        $this->checkResponseSign($returnResponse->getSignContent(),
-            $respObject[self::SIGN_NODE_NAME],
-            $respObject[self::SIGN_TYPE_NODE_NAME]);
+        $this->checkResponseSign($contentSign,
+            Utility::safeGetValue($respObject, self::SIGN_NODE_NAME),
+            Utility::safeGetValue($respObject, self::SIGN_TYPE_NODE_NAME, Config::getSignType()));
 
         return $returnResponse;
+    }
+
+    function parserJSONSignSource($rootNodeName, $responseContent)
+    {
+        $rootIndex = strpos($responseContent, $rootNodeName);
+
+        if ($rootIndex > 0) {
+            return $this->parserJSONSource($responseContent, $rootNodeName, $rootIndex);
+        } else {
+            return null;
+        }
+    }
+
+    function parserJSONSource($responseContent, $nodeName, $nodeIndex)
+    {
+        $signDataStartIndex = $nodeIndex + strlen($nodeName) + 2;
+        $signIndex          = strpos($responseContent, "\"" . self::SIGN_NODE_NAME . "\"");
+        // 签名前-逗号
+        $signDataEndIndex = $signIndex - 1;
+        $indexLen         = $signDataEndIndex - $signDataStartIndex;
+        if ($indexLen < 0) {
+            return null;
+        }
+
+        return substr($responseContent, $signDataStartIndex, $indexLen);
     }
 
     public function getAccessPointUrl($request)
@@ -71,9 +112,15 @@ class AlipayClient
             $this->gatewayUrl4Global :
             $this->gatewayUrl4Domestic;
 
-        return Config::getSandbox() ?
+        $accessPointUrl = Config::getSandbox() ?
             $accessPointUrl['sandbox'] :
             $accessPointUrl['production'];
+
+        $accessPointUrl .= $request instanceof GlobalAbstractRequest ?
+            '_input_charset=' . Config::getCharset() :
+            'charset=' . Config::getCharset();
+
+        return $accessPointUrl;
     }
 
     protected function parseResponseHeaders($headerString)

@@ -141,15 +141,304 @@ class AlipayTradePagePayRequest extends AlipayTradeRequest
 
     protected $__serviceMethod = 'alipay.trade.page.pay';
 
-    protected function getBusinessParams()
+    protected function getStaticBusinessParams()
     {
-        return array_merge(parent::getBusinessParams(), self::$bizContentParams);
+        return array_merge(parent::getStaticBusinessParams(), self::$bizContentParams);
     }
 
-    protected function getExtendParams()
+    protected function getStaticExtendParams()
     {
-        return array_merge(parent::getExtendParams(), self::$bizExtendParams);
+        return array_merge(parent::getStaticExtendParams(), self::$bizExtendParams);
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getOutTradeNo()
+    {
+        return $this->out_trade_no;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setOutTradeNo($value)
+    {
+        $this->out_trade_no = $value;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getProductCode()
+    {
+        return $this->product_code;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setProductCode($value)
+    {
+        $this->product_code = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalAmount()
+    {
+        return $this->total_amount;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTotalAmount($value)
+    {
+        $this->total_amount = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSubject($value)
+    {
+        $this->subject = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setBody($value)
+    {
+        $this->body = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoodsDetail()
+    {
+        return $this->goods_detail;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setGoodsDetail($value)
+    {
+        $this->goods_detail = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassbackParams()
+    {
+        return $this->passback_params;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setPassbackParams($value)
+    {
+        $this->passback_params = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtendParams()
+    {
+        return $this->extend_params;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setExtendParams($value)
+    {
+        $this->extend_params = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoodsType()
+    {
+        return $this->goods_type;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setGoodsType($value)
+    {
+        $this->goods_type = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTimeoutExpress()
+    {
+        return $this->timeout_express;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTimeoutExpress($value)
+    {
+        $this->timeout_express = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnablePayChannels()
+    {
+        return $this->enable_pay_channels;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setEnablePayChannels($value)
+    {
+        $this->enable_pay_channels = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisablePayChannels()
+    {
+        return $this->disable_pay_channels;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setDisablePayChannels($value)
+    {
+        $this->disable_pay_channels = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthToken()
+    {
+        return $this->auth_token;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setAuthToken($value)
+    {
+        $this->auth_token = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQrPayMode()
+    {
+        return $this->qr_pay_mode;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setQrPayMode($value)
+    {
+        $this->qr_pay_mode = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQrcodeWidth()
+    {
+        return $this->qrcode_width;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setQrcodeWidth($value)
+    {
+        $this->qrcode_width = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSysServiceProviderId()
+    {
+        return $this->sys_service_provider_id;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setSysServiceProviderId($value)
+    {
+        $this->sys_service_provider_id = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHbFqNum()
+    {
+        return $this->hb_fq_num;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setHbFqNum($value)
+    {
+        $this->hb_fq_num = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHbFqSellerPercent()
+    {
+        return $this->hb_fq_seller_percent;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setHbFqSellerPercent($value)
+    {
+        $this->hb_fq_seller_percent = $value;
+    }
 
 }

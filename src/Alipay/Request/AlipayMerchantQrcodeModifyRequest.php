@@ -35,8 +35,8 @@ class AlipayMerchantQrcodeModifyRequest extends AlipayMerchantQrcodeCreateReques
         $this->qrcode = $value;
     }
 
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
-        return array_merge(parent::getBasicParams(), self::$params);
+        return array_merge(parent::getStaticBasicParams(), self::$params);
     }
 }

@@ -17,11 +17,16 @@ abstract class AbstractResponse extends Base
         return $this->__entityNode;
     }
 
-    public function getAllParams()
+    public function getStaticBasicParams()
     {
         $baseParams = parent::getAllParams();
 
         return array_merge($baseParams, self::$params);
+    }
+
+    public function getAllParams()
+    {
+        return $this->getStaticBasicParams();
     }
 
     public function initFromResponse($object)

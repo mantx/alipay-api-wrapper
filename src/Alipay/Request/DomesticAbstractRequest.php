@@ -242,9 +242,9 @@ abstract class DomesticAbstractRequest extends AbstractRequest
      *
      * @return array
      */
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
-        return array_merge(parent::getBasicParams(), self::$params);
+        return array_merge(parent::getStaticBasicParams(), self::$params);
     }
 
     /**
@@ -252,7 +252,7 @@ abstract class DomesticAbstractRequest extends AbstractRequest
      *
      * @return array
      */
-    protected function getBusinessParams()
+    protected function getStaticBusinessParams()
     {
         return self::$bizContentParams;
     }
@@ -262,7 +262,7 @@ abstract class DomesticAbstractRequest extends AbstractRequest
      *
      * @return array
      */
-    protected function getExtendParams()
+    protected function getStaticExtendParams()
     {
         return self::$bizExtendParams;
     }
@@ -270,13 +270,13 @@ abstract class DomesticAbstractRequest extends AbstractRequest
     protected function buildExtendParamsValue()
     {
         $extendValues = [];
-        foreach ($this->getExtendParams() as $key => $info) {
+        foreach ($this->getStaticExtendParams() as $key => $info) {
             if ($this->{$key}) {
                 $extendValues[$key] = $this->{$key};
             }
         }
         if ($extendValues &&
-            array_key_exists('extend_params', $this->getBusinessParams())
+            array_key_exists('extend_params', $this->getStaticBusinessParams())
         ) {
             $this->extend_params = json_encode($extendValues, true);
         }
@@ -285,14 +285,14 @@ abstract class DomesticAbstractRequest extends AbstractRequest
     protected function getRequestParams()
     {
         $values      = [];
-        foreach ($this->getBasicParams() as $key => $info) {
+        foreach ($this->getStaticBasicParams() as $key => $info) {
             $values[$key] = $this->{$key};
         }
 
         $this->buildExtendParamsValue();
 
         $bizValues = [];
-        foreach ($this->getBusinessParams() as $key => $info) {
+        foreach ($this->getStaticBusinessParams() as $key => $info) {
             if ($this->{$key}) {
                 $bizValues[$key] = $this->{$key};
             }

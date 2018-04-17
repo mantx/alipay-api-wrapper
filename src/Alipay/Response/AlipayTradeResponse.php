@@ -4,7 +4,7 @@
 namespace Alipay\Response;
 
 
-abstract class AlipayMerchantQrcodeResponse extends GlobalAbstractResponse
+abstract class AlipayTradeResponse extends DomesticAbstractResponse
 {
 
 }

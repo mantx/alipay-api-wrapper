@@ -83,9 +83,9 @@ abstract class GlobalAbstractRequest extends AbstractRequest
         $this->_input_charset = $value;
     }
 
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
-        return array_merge(parent::getBasicParams(), self::$params);
+        return array_merge(parent::getStaticBasicParams(), self::$params);
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class GlobalAbstractRequest extends AbstractRequest
      *
      * @return array
      */
-    protected function getBusinessParams()
+    protected function getStaticBusinessParams()
     {
         return [];
     }
@@ -103,7 +103,7 @@ abstract class GlobalAbstractRequest extends AbstractRequest
      *
      * @return array
      */
-    protected function getExtendParams()
+    protected function getStaticExtendParams()
     {
         return [];
     }

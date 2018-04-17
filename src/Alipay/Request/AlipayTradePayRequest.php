@@ -4,7 +4,7 @@
 namespace Alipay\Request;
 
 
-class AlipayTradeRefundRequest extends AlipayTradeRequest
+class AlipayTradePayRequest extends AlipayTradeRequest
 {
     private static $params = [
         'app_auth_token' => [

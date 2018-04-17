@@ -194,9 +194,9 @@ class AlipayMerchantQrcodeRefundRequest extends AlipayMerchantQrcodeRequest
         $this->is_sync = $value;
     }
 
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
-        return array_merge(parent::getBasicParams(), self::$params);
+        return array_merge(parent::getStaticBasicParams(), self::$params);
     }
 
 }

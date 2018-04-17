@@ -57,9 +57,9 @@ class AlipayMerchantQrcodeQueryRequest extends AlipayMerchantQrcodeRequest
         $this->alipay_trans_id = $value;
     }
 
-    public function getBasicParams()
+    public function getStaticBasicParams()
     {
-        return array_merge(parent::getBasicParams(), self::$params);
+        return array_merge(parent::getStaticBasicParams(), self::$params);
     }
 
 }
