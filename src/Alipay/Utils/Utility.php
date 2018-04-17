@@ -39,11 +39,40 @@ class Utility
         return false;
     }
 
+    /**
+     * @param      $obj
+     * @param      $key
+     * @param null $default
+     *
+     * @return null
+     */
+    public static function safeGetValue($obj, $key, $default = null)
+    {
+        if (is_object($obj)) {
+            if (isset($obj->{$key})) {
+                return $obj->{$key};
+            } else {
+                return $default;
+            }
+        } elseif (is_array($obj)) {
+            if (isset($obj[$key])) {
+                return $obj[$key];
+            } else {
+                return $default;
+            }
+        } elseif (isset($obj)) {
+            return $obj;
+        } else {
+            return $default;
+        }
+    }
+
+
     public static function curl($url, $postFields = null, $charset = 'UTF-8')
     {
-        if (trim($charset) != '') {
-            $url = $url . "_input_charset=" . $charset;
-        }
+//        if (trim($charset) != '') {
+//            $url = $url . "_input_charset=" . $charset;
+//        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FAILONERROR, false);
@@ -140,6 +169,11 @@ class Utility
 
     public static function concatSignParams($signParams, $signSkippedParams = ['sign', 'sign_type'])
     {
+        return implode('&', self::getSignParams($signParams, $signSkippedParams));
+    }
+
+    public static function getSignParams($signParams, $signSkippedParams = ['sign', 'sign_type'])
+    {
         $signData = [];
         foreach ($signParams as $key => $value) {
             if (!in_array($key, $signSkippedParams) &&
@@ -151,7 +185,7 @@ class Utility
         }
         ksort($signData);
 
-        return implode('&', $signData);
+        return $signData;
     }
 
 
