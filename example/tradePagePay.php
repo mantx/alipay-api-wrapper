@@ -16,10 +16,15 @@ require_once("load.php");
 
 
 //建立请求
-$request = new \Alipay\Request\AlipayTradeRefundRequest([
+$request = new \Alipay\Request\AlipayTradePagePayRequest([
+    "notify_url"   => 'http://localhost/alipay-api-wrapper/example/tradePagePayCallback.php',
+    "return_url"   => 'http://localhost/alipay-api-wrapper/example/tradePagePayCallback.php',
+
     //business params
-    'refund_amount' => 6.80,
-    'out_trade_no' => '6d994dafccfeca13f22ba86a869e8178',
+    'body'         => 'Shawn test pay body',
+    'subject'      => 'shawn test pay subject',
+    'total_amount' => mt_rand(1, 1000) / 100,
+    'out_trade_no' => md5(mt_rand(10000, 99999) . uniqid() . microtime()),
 ]);
 
 //method 2
@@ -37,12 +42,10 @@ $request = new \Alipay\Request\AlipayTradeRefundRequest([
 $client = new \Alipay\AlipayClient();
 
 try {
-//    $url = $client->getAccessPointUrl($request) . $request->getRequestParamsAsUrl();
-//    header('Location: ' . $url);
-    $response = $client->execute($request);
-    var_dump($response->toArray());
-//    var_dump($response->getQrcode());
-//    var_dump($response->getQrcodeImgUrl());
+    $url = $client->getAccessPointUrl($request) . $request->getRequestParamsAsUrl();
+    header('Location: ' . $url);
+//    $response = $client->execute($request);
+//    var_dump($response->toArray());
 } catch (Exception $e) {
     print($e->getMessage());
     var_dump($e->getTraceAsString());

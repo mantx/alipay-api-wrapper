@@ -22,7 +22,7 @@
  * 如果不想使用扩展功能请把扩展功能参数赋空值。
  */
 
-require_once("alipay.config.php");
+require_once("alipay.global.config.php");
 require_once("load.php");
 
 //require(dirname(__DIR__) . '/vendor/autoload.php');

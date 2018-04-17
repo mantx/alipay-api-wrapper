@@ -22,7 +22,7 @@
  * 如果不想使用扩展功能请把扩展功能参数赋空值。
  */
 
-require_once("alipay.config.php");
+require_once("alipay.global.config.php");
 require_once("load.php");
 
 //require(dirname(__DIR__) . '/vendor/autoload.php');
@@ -40,7 +40,7 @@ $request = new \Alipay\Request\AlipayMerchantQrcodeModifyStatusRequest([
     'qrcode'                      => 'https://qr.alipay.com/ocx05811ahtyjxgkdsy948b',
     //business parameters
     'status'     => \Alipay\Request\AlipayMerchantQrcodeModifyStatusRequest::STATUS_STOP
-    //    "_input_charset" => trim(strtolower($alipay_config['input_charset']))
+    //    "_input_charset" => trim(strtolower($alipay_config['charset']))
 
 ]);
 try {
