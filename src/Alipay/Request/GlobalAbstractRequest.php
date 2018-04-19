@@ -4,16 +4,19 @@
 namespace Alipay\Request;
 
 
+use Alipay\AlipayClient;
+use Alipay\Utils\Utility;
+
 abstract class GlobalAbstractRequest extends AbstractRequest
 {
     private static $params = [
-        'service' => [
+        'service'        => [
             'type'         => 'string',
             'required'     => true,
             'comment'      => 'The interface name',
             'defaultValue' => '',//alipay.commerce.qrcode.create
         ],
-        'partner' => [
+        'partner'        => [
             'type'         => 'string',
             'required'     => true,
             'comment'      => 'The Alipay account generated when signing with Alipay; its length is 16, and it begins with 2088',
@@ -114,8 +117,14 @@ abstract class GlobalAbstractRequest extends AbstractRequest
         $this->setService($this->__serviceMethod);
     }
 
-    public function checkResponse($request)
+    public function checkResponse($response)
     {
+        $request = Utility::safeGetValue($response, AlipayClient::REQUEST_NODE_NAME);
+
+        if ($response[AlipayClient::STATUS_NODE_NAME] != 'T') {
+            throw new \Exception($response[AlipayClient::ERROR_NODE_NAME]);
+        }
+
         if (!in_array($this->getService(), $request['param'])) {
             throw new \Exception('The service in response does not match the one in request');
         }

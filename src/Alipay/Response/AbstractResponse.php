@@ -12,6 +12,17 @@ abstract class AbstractResponse extends Base
 
     protected $__entityNode;
 
+    protected $rawBody;
+
+    public function __construct($rawBody, $respObject)
+    {
+        parent::__construct();
+
+        $this->rawBody = $rawBody;
+
+        $this->initFromResponse($respObject);
+
+    }
     public function getDataEntityNodeInResponse()
     {
         return $this->__entityNode;

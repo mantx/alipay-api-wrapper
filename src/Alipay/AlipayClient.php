@@ -55,57 +55,27 @@ class AlipayClient
             }
         }
 
-        if ($request instanceof GlobalAbstractRequest) {
-            $this->checkReturnStatus($respObject);
-            $request->checkResponse($respObject[self::REQUEST_NODE_NAME]);
-        }
+        $request->checkResponse($respObject);
 
         /** @var AbstractResponse $returnResponse */
         $className      = get_class($request);
         $className      = str_replace('Request', 'Response', $className);
-        $returnResponse = new $className();
-        $returnResponse->initFromResponse($respObject);
-
-        if ($request instanceof GlobalAbstractRequest) {
-            $contentSign = $returnResponse->getSignContent();
-        } else {
-            $contentSign = $this->parserJSONSignSource($returnResponse->getDataEntityNodeInResponse(),
-                $resp['body']);
-        }
+        $returnResponse = new $className($resp['body'], $respObject);
 
         // 验签
-        $this->checkResponseSign($contentSign,
+        $this->checkResponseSign($returnResponse->getSignContent(),
             Utility::safeGetValue($respObject, self::SIGN_NODE_NAME),
             Utility::safeGetValue($respObject, self::SIGN_TYPE_NODE_NAME, Config::getSignType()));
 
         return $returnResponse;
     }
 
-    function parserJSONSignSource($rootNodeName, $responseContent)
-    {
-        $rootIndex = strpos($responseContent, $rootNodeName);
 
-        if ($rootIndex > 0) {
-            return $this->parserJSONSource($responseContent, $rootNodeName, $rootIndex);
-        } else {
-            return null;
-        }
-    }
-
-    function parserJSONSource($responseContent, $nodeName, $nodeIndex)
-    {
-        $signDataStartIndex = $nodeIndex + strlen($nodeName) + 2;
-        $signIndex          = strpos($responseContent, "\"" . self::SIGN_NODE_NAME . "\"");
-        // 签名前-逗号
-        $signDataEndIndex = $signIndex - 1;
-        $indexLen         = $signDataEndIndex - $signDataStartIndex;
-        if ($indexLen < 0) {
-            return null;
-        }
-
-        return substr($responseContent, $signDataStartIndex, $indexLen);
-    }
-
+    /**
+     * @param $request
+     *
+     * @return array|string
+     */
     public function getAccessPointUrl($request)
     {
         $accessPointUrl = $request instanceof GlobalAbstractRequest ?
@@ -123,6 +93,11 @@ class AlipayClient
         return $accessPointUrl;
     }
 
+    /**
+     * @param $headerString
+     *
+     * @return array
+     */
     protected function parseResponseHeaders($headerString)
     {
         $result  = [];
@@ -161,13 +136,6 @@ class AlipayClient
         if (!$checkResult) {
             throw new \Exception(sprintf('check sign Fail! [type=%s sign=%s signSourceData=%s',
                 $signType, $sign, $signData));
-        }
-    }
-
-    protected function checkReturnStatus($response)
-    {
-        if ($response[self::STATUS_NODE_NAME] != 'T') {
-            throw new \Exception($response[self::ERROR_NODE_NAME]);
         }
     }
 

@@ -302,7 +302,7 @@ abstract class DomesticAbstractRequest extends AbstractRequest
         return $values;
     }
 
-    public function checkResponse($request)
+    public function checkResponse($response)
     {
 //        if (!in_array($this->getService(), $request['param'])) {
 //            throw new \Exception('The service in response does not match the one in request');
