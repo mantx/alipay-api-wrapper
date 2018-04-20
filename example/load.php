@@ -19,6 +19,7 @@ require(dirname(__DIR__) . '/src/Alipay/Request/AlipayTradeRequest.php');
 require(dirname(__DIR__) . '/src/Alipay/Request/AlipayTradePagePayRequest.php');
 require(dirname(__DIR__) . '/src/Alipay/Request/AlipayTradeRefundRequest.php');
 require(dirname(__DIR__) . '/src/Alipay/Request/AlipayTradeQueryRequest.php');
+require(dirname(__DIR__) . '/src/Alipay/Request/AlipayTradeFastpayRefundQueryRequest.php');
 
 
 require(dirname(__DIR__) . '/src/Alipay/Response/AbstractResponse.php');
@@ -36,6 +37,7 @@ require(dirname(__DIR__) . '/src/Alipay/Response/AlipayMerchantQrcodeQueryRespon
 require(dirname(__DIR__) . '/src/Alipay/Response/AlipayTradeResponse.php');
 require(dirname(__DIR__) . '/src/Alipay/Response/AlipayTradeRefundResponse.php');
 require(dirname(__DIR__) . '/src/Alipay/Response/AlipayTradeQueryResponse.php');
+require(dirname(__DIR__) . '/src/Alipay/Response/AlipayTradeFastpayRefundQueryResponse.php');
 
 
 require(dirname(__DIR__) . '/src/Alipay/Utils/Sign.php');

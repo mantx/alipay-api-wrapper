@@ -103,9 +103,6 @@ abstract class AbstractRequest extends Base
         $finalParams      = [];
         $allRequestParams = $this->getRequestParamsWithSign();
 
-        //validate all values
-        $this->validateParams();
-
         foreach ($allRequestParams as $key => $value) {
             if ($key && $value) {
                 $finalParams[$key] = $key . '=' . urlencode($value);
@@ -128,6 +125,9 @@ abstract class AbstractRequest extends Base
     public function getRequestParamsWithSign()
     {
         $this->sign = Sign::sign($this->getSignContent(), $this->sign_type);
+
+        //validate all values
+        $this->validateParams();
 
         return $this->getRequestParams();
     }
