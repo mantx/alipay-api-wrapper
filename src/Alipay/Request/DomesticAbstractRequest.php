@@ -284,7 +284,7 @@ abstract class DomesticAbstractRequest extends AbstractRequest
 
     protected function getRequestParams()
     {
-        $values      = [];
+        $values = [];
         foreach ($this->getStaticBasicParams() as $key => $info) {
             $values[$key] = $this->{$key};
         }
@@ -297,7 +297,12 @@ abstract class DomesticAbstractRequest extends AbstractRequest
                 $bizValues[$key] = $this->{$key};
             }
         }
-        $this->biz_content = $values['biz_content'] = json_encode($bizValues, true);
+
+        if ($bizValues &&
+            array_key_exists('biz_content', $this->getStaticBasicParams())
+        ) {
+            $this->biz_content = $values['biz_content'] = json_encode($bizValues, true);
+        }
 
         return $values;
     }

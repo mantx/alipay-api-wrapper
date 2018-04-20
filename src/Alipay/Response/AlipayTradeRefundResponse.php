@@ -21,7 +21,7 @@ class AlipayTradeRefundResponse extends AlipayTradeResponse
             'maxLength' => 64
         ],
         'buyer_logon_id'                  => [
-            'type'      => 'float',
+            'type'      => 'string',
             'required'  => true,
             'comment'   => '用户的登录id',
             'maxLength' => 100,

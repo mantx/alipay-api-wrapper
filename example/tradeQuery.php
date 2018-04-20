@@ -16,9 +16,8 @@ require_once("load.php");
 
 
 //建立请求
-$request = new \Alipay\Request\AlipayTradeRefundRequest([
+$request = new \Alipay\Request\AlipayTradeQueryRequest([
     //business params
-    'refund_amount' => 6.80,
     'out_trade_no' => '6d994dafccfeca13f22ba86a869e8178',
 ]);
 
