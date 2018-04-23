@@ -38,7 +38,7 @@ class AlipayClient
     {
         $apiParams = $request->getRequestParamsWithSign();
 
-        $resp = Utility::curl($this->getAccessPointUrl($request), $apiParams, Config::getCharset());
+        $resp = Utility::curl($this->getAccessPointUrl($request, true), $apiParams, Config::getCharset());
 
         $headers = $this->parseResponseHeaders($resp['header']);
         if (stristr($headers['Content-Type'], 'text/json')) {
@@ -76,7 +76,7 @@ class AlipayClient
      *
      * @return array|string
      */
-    public function getAccessPointUrl($request)
+    public function getAccessPointUrl($request, $withCharset = false)
     {
         $accessPointUrl = $request instanceof GlobalAbstractRequest ?
             $this->gatewayUrl4Global :
@@ -86,9 +86,11 @@ class AlipayClient
             $accessPointUrl['sandbox'] :
             $accessPointUrl['production'];
 
-        $accessPointUrl .= $request instanceof GlobalAbstractRequest ?
-            '_input_charset=' . Config::getCharset() :
-            'charset=' . Config::getCharset();
+        if ($withCharset) {
+            $accessPointUrl .= $request instanceof GlobalAbstractRequest ?
+                '_input_charset=' . Config::getCharset() :
+                'charset=' . Config::getCharset();
+        }
 
         return $accessPointUrl;
     }
